@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "766247667208",
+    "project_id": "speakbuddy-1da6d",
+    "storage_bucket": "speakbuddy-1da6d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766247667208:android:3c71aaa713efb8ba49b3bd",
+        "android_client_info": {
+          "package_name": "com.example.my_template"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766247667208-uc4qipl86kdnjt97i8ft9phid4alnikq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.my_template",
+            "certificate_hash": "12ce3cffdc2c701872c886f823a44ca0b9e9f35f"
+          }
+        },
+        {
+          "client_id": "766247667208-atjphklfothfqg6gtks6ffpfmncafirv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbsqkoHDw7BrIa4A7X74H__hZ4ZUDYraI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766247667208-atjphklfothfqg6gtks6ffpfmncafirv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "766247667208-n9hj75g4okq1chr4s1kdejdmon06agqd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myTemplate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766247667208:android:58c10673bb5b3aaa49b3bd",
+        "android_client_info": {
+          "package_name": "com.vibrantmoose.speakbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766247667208-c4a7hi005lpvm94rjduaqeg526t36gfo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vibrantmoose.speakbuddy",
+            "certificate_hash": "12ce3cffdc2c701872c886f823a44ca0b9e9f35f"
+          }
+        },
+        {
+          "client_id": "766247667208-atjphklfothfqg6gtks6ffpfmncafirv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbsqkoHDw7BrIa4A7X74H__hZ4ZUDYraI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766247667208-atjphklfothfqg6gtks6ffpfmncafirv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "766247667208-n9hj75g4okq1chr4s1kdejdmon06agqd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myTemplate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
