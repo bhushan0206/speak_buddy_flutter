@@ -9,29 +9,29 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E21), // Dark blue background
+      backgroundColor: const Color(0xFFF7FAFC), // Light background for child-friendly design
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Dashboard',
+          'SpeakBuddy',
           style: GoogleFonts.inter(
             fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: const Color(0xFF2D3748),
           ),
         ),
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.1),
+              color: const Color(0xFFFEE2E2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.logout_rounded,
-                color: Colors.red[400],
+                color: Colors.red[600],
                 size: 24,
               ),
               onPressed: () => _showSignOutDialog(context),
@@ -46,7 +46,7 @@ class DashboardPage extends StatelessWidget {
           if (user == null) {
             return const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6366F1)),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6B73FF)),
               ),
             );
           }
@@ -57,16 +57,16 @@ class DashboardPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Welcome section with enhanced gradient
+                  // Welcome section with child-friendly gradient
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(28.0),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFF6366F1), // Indigo
-                          Color(0xFF8B5CF6), // Purple
-                          Color(0xFFEC4899), // Pink
+                          Color(0xFF6B73FF), // Child-friendly blue
+                          Color(0xFF8B5CF6), // Child-friendly purple
+                          Color(0xFF10B981), // Child-friendly green
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -74,7 +74,7 @@ class DashboardPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+                          color: const Color(0xFF6B73FF).withValues(alpha: 0.3),
                           blurRadius: 30,
                           offset: const Offset(0, 15),
                           spreadRadius: 5,
@@ -120,7 +120,7 @@ class DashboardPage extends StatelessWidget {
                                         style: const TextStyle(
                                           fontSize: 28,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF6366F1),
+                                          color: Color(0xFF6B73FF),
                                         ),
                                       )
                                     : null,
@@ -132,7 +132,7 @@ class DashboardPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Welcome back!',
+                                    'Welcome to your speech journey!',
                                     style: GoogleFonts.inter(
                                       fontSize: 16,
                                       color: Colors.white.withValues(
@@ -143,7 +143,7 @@ class DashboardPage extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 6),
                                   Text(
-                                    user.displayName ?? 'User',
+                                    user.displayName ?? 'Speech Buddy',
                                     style: GoogleFonts.inter(
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
@@ -197,7 +197,7 @@ class DashboardPage extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Active',
+                                'Ready to practice!',
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: Colors.white,
@@ -213,13 +213,13 @@ class DashboardPage extends StatelessWidget {
 
                   const SizedBox(height: 32),
 
-                  // Quick actions section with enhanced styling
+                  // Speech therapy actions section
                   Text(
-                    'Quick Actions',
+                    'Speech Activities',
                     style: GoogleFonts.inter(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: const Color(0xFF2D3748),
                     ),
                   ),
 
@@ -235,30 +235,30 @@ class DashboardPage extends StatelessWidget {
                     children: [
                       _buildActionCard(
                         context,
-                        'Profile',
-                        Icons.person_rounded,
-                        const Color(0xFF3B82F6), // Blue
+                        'Practice Words',
+                        Icons.record_voice_over,
+                        const Color(0xFF6B73FF), // Blue
                         () => _showComingSoon(context),
                       ),
                       _buildActionCard(
                         context,
-                        'Settings',
-                        Icons.settings_rounded,
-                        const Color(0xFFF59E0B), // Amber
-                        () => _showComingSoon(context),
-                      ),
-                      _buildActionCard(
-                        context,
-                        'Analytics',
-                        Icons.analytics_rounded,
-                        const Color(0xFF10B981), // Emerald
-                        () => _showComingSoon(context),
-                      ),
-                      _buildActionCard(
-                        context,
-                        'Support',
-                        Icons.help_rounded,
+                        'Speech Games',
+                        Icons.games,
                         const Color(0xFF8B5CF6), // Purple
+                        () => _showComingSoon(context),
+                      ),
+                      _buildActionCard(
+                        context,
+                        'Progress',
+                        Icons.trending_up,
+                        const Color(0xFF10B981), // Green
+                        () => _showComingSoon(context),
+                      ),
+                      _buildActionCard(
+                        context,
+                        'Parent Portal',
+                        Icons.family_restroom,
+                        const Color(0xFFF59E0B), // Amber
                         () => _showComingSoon(context),
                       ),
                     ],
@@ -266,22 +266,22 @@ class DashboardPage extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
-                  // Enhanced footer with gradient
+                  // Enhanced footer with child-friendly messaging
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF1F2937).withValues(alpha: 0.8),
-                          const Color(0xFF374151).withValues(alpha: 0.6),
+                          const Color(0xFFE0F2FE).withValues(alpha: 0.8),
+                          const Color(0xFFF3E8FF).withValues(alpha: 0.6),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: const Color(0xFF374151).withValues(alpha: 0.3),
+                        color: const Color(0xFF6B73FF).withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
@@ -290,24 +290,24 @@ class DashboardPage extends StatelessWidget {
                         Icon(
                           Icons.celebration_rounded,
                           size: 32,
-                          color: const Color(0xFF6366F1),
+                          color: const Color(0xFF6B73FF),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Your app dashboard is ready!',
+                          'Ready to start your speech adventure?',
                           style: GoogleFonts.inter(
                             fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: const Color(0xFF2D3748),
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Start building amazing features',
+                          'Choose an activity to begin practicing!',
                           style: GoogleFonts.inter(
                             fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: const Color(0xFF4A5568),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -333,12 +333,8 @@ class DashboardPage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          colors: [color.withValues(alpha: 0.1), color.withValues(alpha: 0.05)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+        color: Colors.white,
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 2),
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.1),
@@ -363,11 +359,11 @@ class DashboardPage extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
+                    color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: color.withValues(alpha: 0.3),
-                      width: 1,
+                      width: 2,
                     ),
                   ),
                   child: Icon(icon, color: color, size: 28),
@@ -378,7 +374,7 @@ class DashboardPage extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: const Color(0xFF2D3748),
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -387,10 +383,10 @@ class DashboardPage extends StatelessWidget {
                 const SizedBox(height: 1),
                 Flexible(
                   child: Text(
-                    'Tap to explore',
+                    'Tap to start',
                     style: GoogleFonts.inter(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: const Color(0xFF4A5568),
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
@@ -410,21 +406,21 @@ class DashboardPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1F2937),
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Sign Out',
           style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: const Color(0xFF2D3748),
           ),
         ),
         content: Text(
           'Are you sure you want to sign out?',
           style: GoogleFonts.inter(
             fontSize: 16,
-            color: Colors.white.withValues(alpha: 0.8),
+            color: const Color(0xFF4A5568),
           ),
         ),
         actions: [
@@ -439,7 +435,7 @@ class DashboardPage extends StatelessWidget {
             child: Text(
               'Cancel',
               style: GoogleFonts.inter(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: const Color(0xFF4A5568),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -483,7 +479,7 @@ class DashboardPage extends StatelessWidget {
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF6366F1),
+        backgroundColor: const Color(0xFF6B73FF),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),

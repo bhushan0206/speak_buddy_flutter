@@ -20,24 +20,25 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   void initState() {
     super.initState();
     _particleController = AnimationController(
-      duration: const Duration(seconds: 20),
+      duration: const Duration(seconds: 25),
       vsync: this,
     );
 
     _gradientController = AnimationController(
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 15),
       vsync: this,
     );
 
-    // Create particles
-    for (int i = 0; i < 50; i++) {
+    // Create speech therapy themed particles (speech bubbles, stars, etc.)
+    for (int i = 0; i < 40; i++) {
       _particles.add(
         _Particle(
           x: _random.nextDouble() * 400,
           y: _random.nextDouble() * 800,
-          size: _random.nextDouble() * 3 + 1,
-          speed: _random.nextDouble() * 0.5 + 0.1,
-          opacity: _random.nextDouble() * 0.5 + 0.1,
+          size: _random.nextDouble() * 4 + 2,
+          speed: _random.nextDouble() * 0.3 + 0.05,
+          opacity: _random.nextDouble() * 0.4 + 0.1,
+          type: _random.nextBool() ? ParticleType.speechBubble : ParticleType.star,
         ),
       );
     }
@@ -62,12 +63,16 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.blue[900]!, Colors.purple[900]!, Colors.indigo[900]!],
+          colors: [
+            const Color(0xFFE0F2FE), // Light blue
+            const Color(0xFFF3E8FF), // Light purple
+            const Color(0xFFFEF3C7), // Light yellow
+          ],
         ),
       ),
       child: Stack(
         children: [
-          // Animated gradient overlay
+          // Animated gradient overlay with child-friendly colors
           AnimatedBuilder(
             animation: _gradientController,
             builder: (context, child) {
@@ -77,26 +82,26 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.blue.withValues(
+                      const Color(0xFF6B73FF).withValues(
                         alpha:
-                            0.3 +
-                            0.2 *
+                            0.1 +
+                            0.08 *
                                 math.sin(
                                   _gradientController.value * 2 * math.pi,
                                 ),
                       ),
-                      Colors.purple.withValues(
+                      const Color(0xFF8B5CF6).withValues(
                         alpha:
-                            0.3 +
-                            0.2 *
+                            0.1 +
+                            0.08 *
                                 math.cos(
                                   _gradientController.value * 2 * math.pi,
                                 ),
                       ),
-                      Colors.indigo.withValues(
+                      const Color(0xFF10B981).withValues(
                         alpha:
-                            0.3 +
-                            0.2 *
+                            0.1 +
+                            0.08 *
                                 math.sin(
                                   _gradientController.value * 2 * math.pi +
                                       math.pi / 2,
@@ -109,7 +114,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             },
           ),
 
-          // Floating particles
+          // Floating speech therapy themed particles
           AnimatedBuilder(
             animation: _particleController,
             builder: (context, child) {
@@ -123,10 +128,10 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
             },
           ),
 
-          // Subtle noise overlay
+          // Subtle texture overlay
           Container(
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.white.withValues(alpha: 0.02),
             ),
           ),
         ],
@@ -135,12 +140,15 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   }
 }
 
+enum ParticleType { speechBubble, star }
+
 class _Particle {
   double x;
   double y;
   final double size;
   final double speed;
   final double opacity;
+  final ParticleType type;
 
   _Particle({
     required this.x,
@@ -148,6 +156,7 @@ class _Particle {
     required this.size,
     required this.speed,
     required this.opacity,
+    required this.type,
   });
 
   void update(double deltaTime) {
@@ -166,16 +175,64 @@ class _ParticlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = Colors.white;
-
     for (final particle in particles) {
       particle.update(animation.value);
 
-      paint.color = Colors.white.withValues(alpha: particle.opacity);
-      canvas.drawCircle(Offset(particle.x, particle.y), particle.size, paint);
+      final paint = Paint()
+        ..style = PaintingStyle.fill
+        ..color = particle.type == ParticleType.speechBubble
+            ? const Color(0xFF6B73FF).withValues(alpha: particle.opacity)
+            : const Color(0xFFF59E0B).withValues(alpha: particle.opacity);
+
+      if (particle.type == ParticleType.speechBubble) {
+        _drawSpeechBubble(canvas, Offset(particle.x, particle.y), particle.size, paint);
+      } else {
+        _drawStar(canvas, Offset(particle.x, particle.y), particle.size, paint);
+      }
     }
+  }
+
+  void _drawSpeechBubble(Canvas canvas, Offset center, double size, Paint paint) {
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromCenter(center: center, width: size * 2, height: size * 1.5),
+      Radius.circular(size * 0.3),
+    );
+    canvas.drawRRect(rect, paint);
+    
+    // Draw speech bubble tail
+    final path = Path();
+    path.moveTo(center.dx - size * 0.3, center.dy + size * 0.75);
+    path.lineTo(center.dx - size * 0.6, center.dy + size * 1.2);
+    path.lineTo(center.dx + size * 0.1, center.dy + size * 0.75);
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  void _drawStar(Canvas canvas, Offset center, double size, Paint paint) {
+    final path = Path();
+    for (int i = 0; i < 5; i++) {
+      final angle = i * 2 * math.pi / 5 - math.pi / 2;
+      final outerRadius = size;
+      final innerRadius = size * 0.4;
+      
+      final outerPoint = Offset(
+        center.dx + outerRadius * math.cos(angle),
+        center.dy + outerRadius * math.sin(angle),
+      );
+      final innerPoint = Offset(
+        center.dx + innerRadius * math.cos(angle + math.pi / 5),
+        center.dy + innerRadius * math.sin(angle + math.pi / 5),
+      );
+      
+      if (i == 0) {
+        path.moveTo(outerPoint.dx, outerPoint.dy);
+      } else {
+        path.lineTo(outerPoint.dx, outerPoint.dy);
+      }
+      path.lineTo(innerPoint.dx, innerPoint.dy);
+    }
+    path.close();
+    canvas.drawPath(path, paint);
   }
 
   @override

@@ -14,7 +14,7 @@ class AppConfig {
   static String get googleClientIdIos => _getEnv('GOOGLE_CLIENT_ID_IOS', '');
   static String get googleClientIdWeb => _getEnv('GOOGLE_CLIENT_ID_WEB', '');
 
-  static String get appName => _getEnv('APP_NAME', 'My Template App');
+  static String get appName => _getEnv('APP_NAME', 'SpeakBuddy');
   static String get appVersion => _getEnv('APP_VERSION', '1.0.0');
   static String get environment => _getEnv('ENVIRONMENT', 'development');
 

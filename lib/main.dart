@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
+            seedColor: const Color(0xFF6B73FF), // Child-friendly blue
+            brightness: Brightness.light,
           ),
           textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
           appBarTheme: AppBarTheme(
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             titleTextStyle: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: const Color(0xFF2D3748),
             ),
           ),
         ),

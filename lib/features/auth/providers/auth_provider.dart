@@ -7,7 +7,7 @@ import '../../../core/logging/app_logger.dart';
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
-  bool _isAuthenticated = false;
+  final bool _isAuthenticated = false;
   User? _user;
 
   bool get isLoading => _isLoading;
@@ -31,7 +31,9 @@ class AuthProvider extends ChangeNotifier {
         });
         AppLogger.info('AuthProvider initialized with Firebase');
       } else {
-        AppLogger.warning('Firebase Auth not available, running in offline mode');
+        AppLogger.warning(
+          'Firebase Auth not available, running in offline mode',
+        );
         _user = null;
         _error = 'Firebase authentication not available';
         notifyListeners();
@@ -53,18 +55,26 @@ class AuthProvider extends ChangeNotifier {
       // Check if Firebase is available
       if (FirebaseService.auth == null) {
         AppLogger.error('AuthProvider: Firebase Auth is null');
-        _setError('Firebase is not available. Please check your configuration.');
+        _setError(
+          'Firebase is not available. Please check your configuration.',
+        );
         return;
       }
 
-      AppLogger.info('AuthProvider: Firebase Auth is available, calling GoogleSignInService');
+      AppLogger.info(
+        'AuthProvider: Firebase Auth is available, calling GoogleSignInService',
+      );
       final userCredential = await GoogleSignInService.signInWithGoogle();
 
       if (userCredential != null) {
         _user = userCredential.user;
-        AppLogger.info('AuthProvider: User signed in successfully: ${_user?.email}');
+        AppLogger.info(
+          'AuthProvider: User signed in successfully: ${_user?.email}',
+        );
       } else {
-        AppLogger.info('AuthProvider: Google Sign-In returned null (user cancelled)');
+        AppLogger.info(
+          'AuthProvider: Google Sign-In returned null (user cancelled)',
+        );
       }
     } catch (e, stackTrace) {
       AppLogger.error('AuthProvider: Google Sign-In failed', e, stackTrace);
@@ -78,7 +88,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> signOut() async {
     try {
       _setLoading(true);
-      
+
       // Try to sign out from Google Sign-In
       try {
         await GoogleSignInService.signOut();

@@ -1,4 +1,4 @@
-# Setup Guide for Flutter Template
+# Setup Guide for SpeakBuddy
 
 ## Quick Start
 
@@ -49,13 +49,23 @@
 
 ## Next Steps
 
-- Customize the template cards in `landing_page.dart`
-- Add your own features in the `features/` directory
-- Modify the theme and styling in `main.dart`
-- Add more authentication methods if needed
+- Customize the feature cards in `landing_page.dart` to highlight speech therapy features
+- Add speech recognition and therapy features in the `features/` directory
+- Modify the theme and styling in `main.dart` for child-friendly design
+- Implement speech therapy exercises and games
+- Add progress tracking and reporting features
+
+## Speech Therapy App Considerations
+
+- **COPPA Compliance**: Ensure all features comply with children's privacy regulations
+- **Accessibility**: Make the app accessible to children with different abilities
+- **Cultural Sensitivity**: Include diverse representation and language support
+- **Parent Controls**: Implement appropriate parental controls and monitoring
+- **Offline Functionality**: Ensure core features work without internet connection
 
 ## Support
 
 - Check the README.md for detailed documentation
 - Review Firebase and Flutter documentation
 - Create issues for bugs or feature requests
+- Consider speech therapy professional consultation for app features

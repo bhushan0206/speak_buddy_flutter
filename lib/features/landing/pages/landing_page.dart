@@ -74,6 +74,7 @@ class _LandingPageState extends State<LandingPage>
         }
 
         return Scaffold(
+          backgroundColor: const Color(0xFFF7FAFC),
           body: Stack(
             children: [
               // Animated background
@@ -92,8 +93,8 @@ class _LandingPageState extends State<LandingPage>
                       _buildHeader(),
                       const SizedBox(height: 32),
 
-                      // Template cards section
-                      _buildTemplateCards(),
+                      // Feature cards section
+                      _buildFeatureCards(),
                       const SizedBox(height: 32),
 
                       // Google Sign-In section
@@ -120,20 +121,20 @@ class _LandingPageState extends State<LandingPage>
         position: _slideAnimation,
         child: Column(
           children: [
-            // App logo/icon with enhanced styling
+            // App logo/icon with child-friendly styling
             Container(
-              width: 70,
-              height: 70,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue[400]!, Colors.purple[600]!],
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6B73FF), Color(0xFF8B5CF6)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withValues(alpha: 0.4),
+                    color: const Color(0xFF6B73FF).withValues(alpha: 0.3),
                     blurRadius: 25,
                     offset: const Offset(0, 12),
                     spreadRadius: 2,
@@ -141,35 +142,35 @@ class _LandingPageState extends State<LandingPage>
                 ],
               ),
               child: const Icon(
-                Icons.rocket_launch,
+                Icons.record_voice_over,
                 color: Colors.white,
-                size: 35,
+                size: 40,
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            // App title with enhanced typography
+            // App title with child-friendly typography
             Text(
-              'My Template App',
+              'SpeakBuddy',
               style: GoogleFonts.inter(
-                fontSize: 28,
+                fontSize: 32,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: const Color(0xFF2D3748),
                 letterSpacing: -0.5,
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
 
-            // App subtitle with better styling
+            // App subtitle with child-friendly messaging
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                'Your comprehensive Flutter template for building amazing apps',
+                'Your AI-powered speech therapy companion for children aged 2-12',
                 style: GoogleFonts.inter(
-                  fontSize: 15,
-                  color: Colors.white.withValues(alpha: 0.85),
+                  fontSize: 16,
+                  color: const Color(0xFF4A5568),
                   height: 1.4,
                   fontWeight: FontWeight.w500,
                 ),
@@ -182,33 +183,44 @@ class _LandingPageState extends State<LandingPage>
     );
   }
 
-  Widget _buildTemplateCards() {
-    final templateCards = [
+  Widget _buildFeatureCards() {
+    final featureCards = [
       {
-        'title': 'Firebase Integration',
+        'title': 'Child-Specific AI',
         'description':
-            'Ready-to-use Firebase services with authentication and database',
-        'icon': Icons.cloud,
-        'color': Colors.orange,
+            'Built exclusively for children\'s unique speech patterns and behaviors',
+        'icon': Icons.psychology,
+        'color': const Color(0xFF4F46E5), // More vibrant indigo
       },
       {
-        'title': 'Google Sign-In',
-        'description':
-            'Seamless Google authentication with proper error handling',
-        'icon': Icons.login,
-        'color': Colors.blue,
+        'title': 'Gamified Learning',
+        'description': 'Story-driven adventures and interactive challenges',
+        'icon': Icons.games,
+        'color': const Color(0xFF7C3AED), // More vibrant purple
       },
       {
-        'title': 'Modern UI/UX',
-        'description': 'Beautiful animations and responsive design patterns',
-        'icon': Icons.brush,
-        'color': Colors.purple,
+        'title': 'Professional Tools',
+        'description': 'Seamless therapist-parent collaboration',
+        'icon': Icons.people,
+        'color': const Color(0xFF059669), // More vibrant emerald
       },
       {
-        'title': 'Production Ready',
-        'description': 'Logging, error handling, and best practices included',
-        'icon': Icons.verified,
-        'color': Colors.green,
+        'title': 'Cultural Inclusivity',
+        'description': 'Supports diverse accents, dialects, and languages',
+        'icon': Icons.language,
+        'color': const Color(0xFFD97706), // More vibrant amber
+      },
+      {
+        'title': 'Privacy First',
+        'description': 'COPPA-compliant with local processing capabilities',
+        'icon': Icons.security,
+        'color': const Color(0xFFDC2626), // More vibrant red
+      },
+      {
+        'title': 'Fun & Engaging',
+        'description': 'Makes speech therapy enjoyable for children',
+        'icon': Icons.celebration,
+        'color': const Color(0xFFDB2777), // More vibrant pink
       },
     ];
 
@@ -223,36 +235,46 @@ class _LandingPageState extends State<LandingPage>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
-                'Template Features',
+                'Why Choose SpeakBuddy?',
                 style: GoogleFonts.inter(
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: const Color(0xFF2D3748),
                   letterSpacing: -0.3,
                 ),
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // Compact grid with smaller cards
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
-                childAspectRatio: 1.0, // Make cards more square
-              ),
-              itemCount: templateCards.length,
-              itemBuilder: (context, index) {
-                final card = templateCards[index];
-                return _buildCompactCard(
-                  title: card['title'] as String,
-                  description: card['description'] as String,
-                  icon: card['icon'] as IconData,
-                  color: card['color'] as Color,
+            // Responsive grid with smaller cards for web
+            LayoutBuilder(
+              builder: (context, constraints) {
+                // Use more columns on wider screens
+                final crossAxisCount = constraints.maxWidth > 800 ? 3 : 2;
+                final childAspectRatio = constraints.maxWidth > 800
+                    ? 1.2
+                    : 0.85;
+
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: childAspectRatio,
+                  ),
+                  itemCount: featureCards.length,
+                  itemBuilder: (context, index) {
+                    final card = featureCards[index];
+                    return _buildFeatureCard(
+                      title: card['title'] as String,
+                      description: card['description'] as String,
+                      icon: card['icon'] as IconData,
+                      color: card['color'] as Color,
+                    );
+                  },
                 );
               },
             ),
@@ -262,7 +284,7 @@ class _LandingPageState extends State<LandingPage>
     );
   }
 
-  Widget _buildCompactCard({
+  Widget _buildFeatureCard({
     required String title,
     required String description,
     required IconData icon,
@@ -270,22 +292,15 @@ class _LandingPageState extends State<LandingPage>
   }) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.15),
-            color.withValues(alpha: 0.08),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.1),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-            spreadRadius: 1,
+            color: color.withValues(alpha: 0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+            spreadRadius: 2,
           ),
         ],
       ),
@@ -293,53 +308,64 @@ class _LandingPageState extends State<LandingPage>
         color: Colors.transparent,
         child: InkWell(
           onTap: () {},
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(
+              16.0,
+            ), // Reduced padding for smaller cards
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon container
+                // Icon container with enhanced styling
                 Container(
-                  width: 44,
-                  height: 44,
+                  width: 48, // Slightly smaller icon
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      colors: [
+                        color.withValues(alpha: 0.1),
+                        color.withValues(alpha: 0.2),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: color.withValues(alpha: 0.3),
-                      width: 1,
+                      color: color.withValues(alpha: 0.4),
+                      width: 2,
                     ),
                   ),
-                  child: Icon(icon, color: color, size: 22),
+                  child: Icon(
+                    icon,
+                    color: color,
+                    size: 24,
+                  ), // Slightly smaller icon
                 ),
 
-                const SizedBox(height: 10),
-
+                const SizedBox(height: 12), // Reduced spacing
                 // Title
                 Text(
                   title,
                   style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    fontSize: 14, // Smaller font for web
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF2D3748),
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
 
-                const SizedBox(height: 4),
-
+                const SizedBox(height: 6), // Reduced spacing
                 // Description
                 Flexible(
                   child: Text(
                     description,
                     style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      height: 1.2,
+                      fontSize: 12, // Smaller font for web
+                      color: const Color(0xFF4A5568),
+                      height: 1.3,
                     ),
                     textAlign: TextAlign.center,
                     maxLines: 3,
@@ -367,57 +393,68 @@ class _LandingPageState extends State<LandingPage>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Text(
-                    'Get Started',
+                    'Start Your Speech Journey',
                     style: GoogleFonts.inter(
-                      fontSize: 22,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: const Color(0xFF2D3748),
                       letterSpacing: -0.3,
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+
+                // Subtitle
+                Text(
+                  'Join thousands of families improving speech together',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    color: const Color(0xFF4A5568),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 24),
 
                 if (authProvider.error != null)
                   Container(
-                    padding: const EdgeInsets.all(14),
-                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.red.withValues(alpha: 0.3),
-                      ),
+                      color: const Color(0xFFFEE2E2),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFFCA5A5)),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.error_outline,
-                          color: Colors.red[300],
-                          size: 20,
+                          color: Colors.red[600],
+                          size: 24,
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             authProvider.error!,
                             style: TextStyle(
-                              color: Colors.red[300],
-                              fontSize: 13,
+                              color: Colors.red[700],
+                              fontSize: 14,
                             ),
                           ),
                         ),
                         IconButton(
                           icon: const Icon(
                             Icons.close,
-                            color: Colors.white,
-                            size: 18,
+                            color: Colors.red,
+                            size: 20,
                           ),
                           onPressed: authProvider.clearError,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(
-                            minWidth: 32,
-                            minHeight: 32,
+                            minWidth: 36,
+                            minHeight: 36,
                           ),
                         ),
                       ],
@@ -425,7 +462,7 @@ class _LandingPageState extends State<LandingPage>
                   ),
 
                 // Enhanced sign-in button
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: authProvider.isLoading
@@ -454,40 +491,42 @@ class _LandingPageState extends State<LandingPage>
                             }
                           },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black87,
+                      backgroundColor: const Color(0xFF6B73FF),
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 14,
+                        horizontal: 32,
+                        vertical: 18,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      elevation: 6,
-                      shadowColor: Colors.black.withValues(alpha: 0.2),
+                      elevation: 8,
+                      shadowColor: const Color(
+                        0xFF6B73FF,
+                      ).withValues(alpha: 0.3),
                     ),
                     icon: authProvider.isLoading
                         ? SizedBox(
-                            width: 18,
-                            height: 18,
+                            width: 20,
+                            height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.grey[600]!,
+                                Colors.white,
                               ),
                             ),
                           )
                         : Icon(
                             Icons.g_mobiledata,
-                            size: 18,
-                            color: Colors.blue[600],
+                            size: 20,
+                            color: Colors.white,
                           ),
                     label: Text(
                       authProvider.isLoading
                           ? 'Signing In...'
                           : 'Continue with Google',
                       style: GoogleFonts.inter(
-                        fontSize: 15,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -510,25 +549,26 @@ class _LandingPageState extends State<LandingPage>
           children: [
             // Enhanced footer with better styling
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
                 children: [
                   Text(
-                    'Built with ❤️ using Flutter',
+                    'Empowering children to find their voice',
                     style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 14,
+                      color: const Color(0xFF4A5568),
                       fontWeight: FontWeight.w500,
                     ),
+                    textAlign: TextAlign.center,
                   ),
 
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
 
                   Text(
-                    'Version 1.0.0',
+                    'SpeakBuddy v1.0.0',
                     style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      fontSize: 12,
+                      color: const Color(0xFF718096),
                     ),
                   ),
                 ],

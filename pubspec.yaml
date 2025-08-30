@@ -1,5 +1,5 @@
-name: my_template
-description: "A comprehensive Flutter template app with Firebase, Google Sign-In, and modern UI"
+name: speak_buddy
+description: "SpeakBuddy - AI-Powered Speech Therapy App for Children aged 2-12. Combines specialized AI speech recognition with gamified learning experiences for effective and engaging speech therapy."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
