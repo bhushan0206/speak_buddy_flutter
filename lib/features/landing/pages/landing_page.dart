@@ -190,37 +190,43 @@ class _LandingPageState extends State<LandingPage>
         'description':
             'Built exclusively for children\'s unique speech patterns and behaviors',
         'icon': Icons.psychology,
-        'color': const Color(0xFF4F46E5), // More vibrant indigo
+        'color': const Color(0xFFFF6B6B), // Bright coral
+        'emoji': '🧠',
       },
       {
         'title': 'Gamified Learning',
         'description': 'Story-driven adventures and interactive challenges',
         'icon': Icons.games,
-        'color': const Color(0xFF7C3AED), // More vibrant purple
+        'color': const Color(0xFF4ECDC4), // Bright teal
+        'emoji': '🎮',
       },
       {
         'title': 'Professional Tools',
         'description': 'Seamless therapist-parent collaboration',
         'icon': Icons.people,
-        'color': const Color(0xFF059669), // More vibrant emerald
+        'color': const Color(0xFF45B7D1), // Bright blue
+        'emoji': '👥',
       },
       {
         'title': 'Cultural Inclusivity',
         'description': 'Supports diverse accents, dialects, and languages',
         'icon': Icons.language,
-        'color': const Color(0xFFD97706), // More vibrant amber
+        'color': const Color(0xFFFFD93D), // Bright yellow
+        'emoji': '🌍',
       },
       {
         'title': 'Privacy First',
         'description': 'COPPA-compliant with local processing capabilities',
         'icon': Icons.security,
-        'color': const Color(0xFFDC2626), // More vibrant red
+        'color': const Color(0xFFFF8A80), // Bright red
+        'emoji': '🔒',
       },
       {
         'title': 'Fun & Engaging',
         'description': 'Makes speech therapy enjoyable for children',
         'icon': Icons.celebration,
-        'color': const Color(0xFFDB2777), // More vibrant pink
+        'color': const Color(0xFFDDA0DD), // Bright plum
+        'emoji': '🎉',
       },
     ];
 
@@ -231,23 +237,30 @@ class _LandingPageState extends State<LandingPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Enhanced section title
+            // Enhanced section title with cartoon styling
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                'Why Choose SpeakBuddy?',
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF2D3748),
-                  letterSpacing: -0.3,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('🌟 ', style: TextStyle(fontSize: 28)),
+                  Text(
+                    'Why Choose SpeakBuddy?',
+                    style: GoogleFonts.inter(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF2D3748),
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const Text(' 🌟', style: TextStyle(fontSize: 28)),
+                ],
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            // Responsive grid with smaller cards for web
+            // Responsive grid with enhanced cartoon-style cards
             LayoutBuilder(
               builder: (context, constraints) {
                 // Use more columns on wider screens
@@ -261,8 +274,8 @@ class _LandingPageState extends State<LandingPage>
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
                     childAspectRatio: childAspectRatio,
                   ),
                   itemCount: featureCards.length,
@@ -273,6 +286,7 @@ class _LandingPageState extends State<LandingPage>
                       description: card['description'] as String,
                       icon: card['icon'] as IconData,
                       color: card['color'] as Color,
+                      emoji: card['emoji'] as String,
                     );
                   },
                 );
@@ -289,94 +303,115 @@ class _LandingPageState extends State<LandingPage>
     required String description,
     required IconData icon,
     required Color color,
+    required String emoji,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.15),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {},
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(
-              16.0,
-            ), // Reduced padding for smaller cards
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Icon container with enhanced styling
-                Container(
-                  width: 48, // Slightly smaller icon
-                  height: 48,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        color.withValues(alpha: 0.1),
-                        color.withValues(alpha: 0.2),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: color.withValues(alpha: 0.4),
-                      width: 2,
-                    ),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                    size: 24,
-                  ), // Slightly smaller icon
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 300),
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: 0.8 + (0.2 * value),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, color.withValues(alpha: 0.05)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: color.withValues(alpha: 0.4), width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.2),
+                  blurRadius: 25,
+                  offset: const Offset(0, 12),
+                  spreadRadius: 3,
                 ),
-
-                const SizedBox(height: 12), // Reduced spacing
-                // Title
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                    fontSize: 14, // Smaller font for web
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF2D3748),
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
-                const SizedBox(height: 6), // Reduced spacing
-                // Description
-                Flexible(
-                  child: Text(
-                    description,
-                    style: GoogleFonts.inter(
-                      fontSize: 12, // Smaller font for web
-                      color: const Color(0xFF4A5568),
-                      height: 1.3,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                BoxShadow(
+                  color: color.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 1,
                 ),
               ],
             ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {},
+                borderRadius: BorderRadius.circular(24),
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Emoji decoration
+                      Text(emoji, style: const TextStyle(fontSize: 32)),
+                      const SizedBox(height: 8),
+
+                      // Icon container with enhanced styling
+                      Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              color.withValues(alpha: 0.15),
+                              color.withValues(alpha: 0.25),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: color.withValues(alpha: 0.5),
+                            width: 2,
+                          ),
+                        ),
+                        child: Icon(icon, color: color, size: 26),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      // Title
+                      Text(
+                        title,
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF2D3748),
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Description
+                      Flexible(
+                        child: Text(
+                          description,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: const Color(0xFF4A5568),
+                            height: 1.3,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

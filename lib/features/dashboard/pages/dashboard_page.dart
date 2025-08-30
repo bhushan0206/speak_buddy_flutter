@@ -9,29 +9,39 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAFC), // Light background for child-friendly design
+      backgroundColor: const Color(
+        0xFFF0F9FF,
+      ), // Brighter light blue background
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          'SpeakBuddy',
-          style: GoogleFonts.inter(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF2D3748),
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('🗣️ ', style: TextStyle(fontSize: 24)),
+            Text(
+              'SpeakBuddy',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF1E40AF),
+              ),
+            ),
+            const Text(' ✨', style: TextStyle(fontSize: 24)),
+          ],
         ),
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFFFEE2E2),
-              borderRadius: BorderRadius.circular(12),
+              color: const Color(0xFFFF6B6B).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFFF6B6B), width: 2),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.logout_rounded,
-                color: Colors.red[600],
+                color: const Color(0xFFFF6B6B),
                 size: 24,
               ),
               onPressed: () => _showSignOutDialog(context),
@@ -46,7 +56,7 @@ class DashboardPage extends StatelessWidget {
           if (user == null) {
             return const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6B73FF)),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6B6B)),
               ),
             );
           }
@@ -57,27 +67,33 @@ class DashboardPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Welcome section with child-friendly gradient
+                  // Welcome section with enhanced vibrant cartoon styling
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(28.0),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFF6B73FF), // Child-friendly blue
-                          Color(0xFF8B5CF6), // Child-friendly purple
-                          Color(0xFF10B981), // Child-friendly green
+                          Color(0xFFFF6B6B), // Bright coral
+                          Color(0xFF4ECDC4), // Bright teal
+                          Color(0xFFFFD93D), // Bright yellow
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF6B73FF).withValues(alpha: 0.3),
-                          blurRadius: 30,
-                          offset: const Offset(0, 15),
-                          spreadRadius: 5,
+                          color: const Color(0xFFFF6B6B).withValues(alpha: 0.4),
+                          blurRadius: 35,
+                          offset: const Offset(0, 18),
+                          spreadRadius: 4,
+                        ),
+                        BoxShadow(
+                          color: const Color(0xFF4ECDC4).withValues(alpha: 0.3),
+                          blurRadius: 25,
+                          offset: const Offset(8, 8),
+                          spreadRadius: 2,
                         ),
                       ],
                     ),
@@ -86,24 +102,24 @@ class DashboardPage extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            // Enhanced avatar with border
+                            // Enhanced avatar with cartoon styling
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: Colors.white,
-                                  width: 3,
+                                  width: 4,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.2),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5),
+                                    color: Colors.black.withValues(alpha: 0.3),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 8),
                                   ),
                                 ],
                               ),
                               child: CircleAvatar(
-                                radius: 35,
+                                radius: 40,
                                 backgroundColor: Colors.white,
                                 backgroundImage: user.photoURL != null
                                     ? NetworkImage(user.photoURL!)
@@ -118,47 +134,55 @@ class DashboardPage extends StatelessWidget {
                                                 .toUpperCase() ??
                                             'U',
                                         style: const TextStyle(
-                                          fontSize: 28,
+                                          fontSize: 32,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF6B73FF),
+                                          color: Color(0xFFFF6B6B),
                                         ),
                                       )
                                     : null,
                               ),
                             ),
-                            const SizedBox(width: 20),
+                            const SizedBox(width: 24),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Welcome to your speech journey!',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        '🎉 ',
+                                        style: TextStyle(fontSize: 20),
                                       ),
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                      Text(
+                                        'Welcome to your speech journey!',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 18,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.95,
+                                          ),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 6),
+                                  const SizedBox(height: 8),
                                   Text(
                                     user.displayName ?? 'Speech Buddy',
                                     style: GoogleFonts.inter(
-                                      fontSize: 28,
+                                      fontSize: 32,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       height: 1.1,
                                     ),
                                   ),
                                   if (user.email != null) ...[
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 6),
                                     Text(
                                       user.email!,
                                       style: GoogleFonts.inter(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         color: Colors.white.withValues(
-                                          alpha: 0.8,
+                                          alpha: 0.9,
                                         ),
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -169,39 +193,48 @@ class DashboardPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
-                        // Status indicator
+                        const SizedBox(height: 28),
+                        // Status indicator with cartoon styling
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                            horizontal: 20,
+                            vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white.withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1,
+                              color: Colors.white.withValues(alpha: 0.4),
+                              width: 2,
                             ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF4ECDC4),
                                   shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(
+                                        0xFF4ECDC4,
+                                      ).withValues(alpha: 0.6),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 12),
                               Text(
-                                'Ready to practice!',
+                                'Ready to practice! 🚀',
                                 style: GoogleFonts.inter(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ],
@@ -211,105 +244,134 @@ class DashboardPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 36),
 
-                  // Speech therapy actions section
-                  Text(
-                    'Speech Activities',
-                    style: GoogleFonts.inter(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2D3748),
-                    ),
+                  // Speech therapy actions section with cartoon styling
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('🎯 ', style: TextStyle(fontSize: 28)),
+                      Text(
+                        'Speech Activities',
+                        style: GoogleFonts.inter(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF1E40AF),
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const Text(' 🎯', style: TextStyle(fontSize: 28)),
+                    ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
 
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 24,
+                    mainAxisSpacing: 24,
                     childAspectRatio: 1.1,
                     children: [
                       _buildActionCard(
                         context,
                         'Practice Words',
                         Icons.record_voice_over,
-                        const Color(0xFF6B73FF), // Blue
+                        const Color(0xFFFF6B6B), // Bright coral
+                        '🗣️',
                         () => _showComingSoon(context),
                       ),
                       _buildActionCard(
                         context,
                         'Speech Games',
                         Icons.games,
-                        const Color(0xFF8B5CF6), // Purple
+                        const Color(0xFF4ECDC4), // Bright teal
+                        '🎮',
                         () => _showComingSoon(context),
                       ),
                       _buildActionCard(
                         context,
                         'Progress',
                         Icons.trending_up,
-                        const Color(0xFF10B981), // Green
+                        const Color(0xFF45B7D1), // Bright blue
+                        '📈',
                         () => _showComingSoon(context),
                       ),
                       _buildActionCard(
                         context,
                         'Parent Portal',
                         Icons.family_restroom,
-                        const Color(0xFFF59E0B), // Amber
+                        const Color(0xFFFFD93D), // Bright yellow
+                        '👨‍👩‍👧‍👦',
                         () => _showComingSoon(context),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 48),
 
-                  // Enhanced footer with child-friendly messaging
+                  // Enhanced footer with cartoon styling
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFFE0F2FE).withValues(alpha: 0.8),
-                          const Color(0xFFF3E8FF).withValues(alpha: 0.6),
+                          const Color(0xFFFFF3E0).withValues(alpha: 0.9),
+                          const Color(0xFFFFE0B2).withValues(alpha: 0.7),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: const Color(0xFF6B73FF).withValues(alpha: 0.2),
-                        width: 1,
+                        color: const Color(0xFFFFB74D),
+                        width: 3,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFFB74D).withValues(alpha: 0.3),
+                          blurRadius: 25,
+                          offset: const Offset(0, 12),
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
                     child: Column(
                       children: [
-                        Icon(
-                          Icons.celebration_rounded,
-                          size: 32,
-                          color: const Color(0xFF6B73FF),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('💫 ', style: TextStyle(fontSize: 28)),
+                            Text(
+                              'Ready to start your speech adventure?',
+                              style: GoogleFonts.inter(
+                                fontSize: 18,
+                                color: const Color(0xFFE65100),
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const Text(' 💫', style: TextStyle(fontSize: 28)),
+                          ],
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Ready to start your speech adventure?',
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            color: const Color(0xFF2D3748),
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Choose an activity to begin practicing!',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            color: const Color(0xFF4A5568),
-                          ),
-                          textAlign: TextAlign.center,
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('🎉 ', style: TextStyle(fontSize: 20)),
+                            Text(
+                              'Choose an activity to begin practicing!',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                color: const Color(0xFFBF360C),
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const Text(' 🎉', style: TextStyle(fontSize: 20)),
+                          ],
                         ),
                       ],
                     ),
@@ -328,77 +390,113 @@ class DashboardPage extends StatelessWidget {
     String title,
     IconData icon,
     Color color,
+    String emoji,
     VoidCallback onTap,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: color.withValues(alpha: 0.3),
-                      width: 2,
-                    ),
-                  ),
-                  child: Icon(icon, color: color, size: 28),
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 400),
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: 0.9 + (0.1 * value),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, color.withValues(alpha: 0.08)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: color.withValues(alpha: 0.4), width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.25),
+                  blurRadius: 25,
+                  offset: const Offset(0, 12),
+                  spreadRadius: 3,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF2D3748),
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 1),
-                Flexible(
-                  child: Text(
-                    'Tap to start',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: const Color(0xFF4A5568),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                BoxShadow(
+                  color: color.withValues(alpha: 0.15),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 1,
                 ),
               ],
             ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(24),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Emoji decoration
+                      Text(emoji, style: const TextStyle(fontSize: 36)),
+                      const SizedBox(height: 12),
+
+                      // Icon container with enhanced styling
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              color.withValues(alpha: 0.15),
+                              color.withValues(alpha: 0.25),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: color.withValues(alpha: 0.5),
+                            width: 2,
+                          ),
+                        ),
+                        child: Icon(icon, color: color, size: 30),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Title
+                      Text(
+                        title,
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF2D3748),
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Subtitle
+                      Text(
+                        'Tap to start',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: const Color(0xFF4A5568),
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -407,14 +505,19 @@ class DashboardPage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Sign Out',
-          style: GoogleFonts.inter(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF2D3748),
-          ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            const Text('🚪 ', style: TextStyle(fontSize: 24)),
+            Text(
+              'Sign Out',
+              style: GoogleFonts.inter(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF2D3748),
+              ),
+            ),
+          ],
         ),
         content: Text(
           'Are you sure you want to sign out?',
@@ -429,7 +532,7 @@ class DashboardPage extends StatelessWidget {
             style: TextButton.styleFrom(
               backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: Text(
@@ -446,17 +549,17 @@ class DashboardPage extends StatelessWidget {
               context.read<AuthProvider>().signOut();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red[500],
+              backgroundColor: const Color(0xFFFF6B6B),
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
             ),
             child: Text(
               'Sign Out',
-              style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+              style: GoogleFonts.inter(fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -469,20 +572,19 @@ class DashboardPage extends StatelessWidget {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.info_outline_rounded, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
+            const Text('🚧 ', style: TextStyle(fontSize: 20)),
             Expanded(
               child: Text(
                 'This feature is coming soon!',
-                style: GoogleFonts.inter(fontWeight: FontWeight.w500),
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600),
               ),
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF6B73FF),
+        backgroundColor: const Color(0xFFFF6B6B),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.all(20),
         duration: const Duration(seconds: 3),
       ),
     );
