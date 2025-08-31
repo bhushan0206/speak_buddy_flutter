@@ -100,98 +100,208 @@ class DashboardPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            // Enhanced avatar with cartoon styling
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 4,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: CircleAvatar(
-                                radius: 40,
-                                backgroundColor: Colors.white,
-                                backgroundImage: user.photoURL != null
-                                    ? NetworkImage(user.photoURL!)
-                                    : null,
-                                child: user.photoURL == null
-                                    ? Text(
-                                        user.displayName
-                                                ?.substring(0, 1)
-                                                .toUpperCase() ??
-                                            user.email
-                                                ?.substring(0, 1)
-                                                .toUpperCase() ??
-                                            'U',
-                                        style: const TextStyle(
-                                          fontSize: 32,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFFFF6B6B),
-                                        ),
-                                      )
-                                    : null,
-                              ),
-                            ),
-                            const SizedBox(width: 24),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final isSmallScreen = constraints.maxWidth < 400;
+                            
+                            if (isSmallScreen) {
+                              // Stack layout for small screens
+                              return Column(
                                 children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        '🎉 ',
-                                        style: TextStyle(fontSize: 20),
+                                  // Avatar centered
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 4,
                                       ),
-                                      Text(
-                                        'Welcome to your speech journey!',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 18,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.95,
-                                          ),
-                                          fontWeight: FontWeight.w600,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.3),
+                                          blurRadius: 15,
+                                          offset: const Offset(0, 8),
                                         ),
+                                      ],
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 35,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: user.photoURL != null
+                                          ? NetworkImage(user.photoURL!)
+                                          : null,
+                                      child: user.photoURL == null
+                                          ? Text(
+                                              user.displayName
+                                                      ?.substring(0, 1)
+                                                      .toUpperCase() ??
+                                                  user.email
+                                                      ?.substring(0, 1)
+                                                      .toUpperCase() ??
+                                                  'U',
+                                              style: const TextStyle(
+                                                fontSize: 28,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFFF6B6B),
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  // Welcome text centered
+                                  Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            '🎉 ',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              'Welcome to your speech journey!',
+                                              style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.95,
+                                                ),
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        user.displayName ?? 'Speech Buddy',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          height: 1.1,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      if (user.email != null) ...[
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          user.email!,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 14,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.9,
+                                            ),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    user.displayName ?? 'Speech Buddy',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      height: 1.1,
+                                ],
+                              );
+                            } else {
+                              // Row layout for larger screens
+                              return Row(
+                                children: [
+                                  // Enhanced avatar with cartoon styling
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 4,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.3),
+                                          blurRadius: 15,
+                                          offset: const Offset(0, 8),
+                                        ),
+                                      ],
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 40,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: user.photoURL != null
+                                          ? NetworkImage(user.photoURL!)
+                                          : null,
+                                      child: user.photoURL == null
+                                          ? Text(
+                                              user.displayName
+                                                      ?.substring(0, 1)
+                                                      .toUpperCase() ??
+                                                  user.email
+                                                      ?.substring(0, 1)
+                                                      .toUpperCase() ??
+                                                  'U',
+                                              style: const TextStyle(
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFFF6B6B),
+                                              ),
+                                            )
+                                          : null,
                                     ),
                                   ),
-                                  if (user.email != null) ...[
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      user.email!,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.9,
+                                  const SizedBox(width: 24),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              '🎉 ',
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                'Welcome to your speech journey!',
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 18,
+                                                  color: Colors.white.withValues(
+                                                    alpha: 0.95,
+                                                  ),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          user.displayName ?? 'Speech Buddy',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            height: 1.1,
+                                          ),
+                                        ),
+                                        if (user.email != null) ...[
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            user.email!,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.9,
+                                              ),
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ],
-                              ),
-                            ),
-                          ],
+                              );
+                            }
+                          },
                         ),
                         const SizedBox(height: 28),
                         // Status indicator with cartoon styling
@@ -247,33 +357,51 @@ class DashboardPage extends StatelessWidget {
                   const SizedBox(height: 36),
 
                   // Speech therapy actions section with cartoon styling
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('🎯 ', style: TextStyle(fontSize: 28)),
-                      Text(
-                        'Speech Activities',
-                        style: GoogleFonts.inter(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF1E40AF),
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-                      const Text(' 🎯', style: TextStyle(fontSize: 28)),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isSmallScreen = constraints.maxWidth < 400;
+                      final titleSize = isSmallScreen ? 22.0 : 28.0;
+                      final emojiSize = isSmallScreen ? 22.0 : 28.0;
+                      
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('🎯 ', style: TextStyle(fontSize: emojiSize)),
+                          Flexible(
+                            child: Text(
+                              'Speech Activities',
+                              style: GoogleFonts.inter(
+                                fontSize: titleSize,
+                                fontWeight: FontWeight.w800,
+                                color: const Color(0xFF1E40AF),
+                                letterSpacing: -0.3,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Text(' 🎯', style: TextStyle(fontSize: emojiSize)),
+                        ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 24),
 
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 24,
-                    mainAxisSpacing: 24,
-                    childAspectRatio: 1.1,
-                    children: [
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isSmallScreen = constraints.maxWidth < 400;
+                      final crossAxisCount = isSmallScreen ? 1 : 2;
+                      final spacing = isSmallScreen ? 16.0 : 24.0;
+                      final childAspectRatio = isSmallScreen ? 1.3 : 1.1;
+                      
+                      return GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: spacing,
+                        mainAxisSpacing: spacing,
+                        childAspectRatio: childAspectRatio,
+                        children: [
                       _buildActionCard(
                         context,
                         'Story Adventure',
@@ -314,7 +442,8 @@ class DashboardPage extends StatelessWidget {
                         () => _showComingSoon(context),
                       ),
                     ],
-                  ),
+                  );
+                },
 
                   const SizedBox(height: 48),
 
@@ -347,38 +476,56 @@ class DashboardPage extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('💫 ', style: TextStyle(fontSize: 28)),
-                            Text(
-                              'Ready to start your speech adventure?',
-                              style: GoogleFonts.inter(
-                                fontSize: 18,
-                                color: const Color(0xFFE65100),
-                                fontWeight: FontWeight.w700,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const Text(' 💫', style: TextStyle(fontSize: 28)),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('🎉 ', style: TextStyle(fontSize: 20)),
-                            Text(
-                              'Choose an activity to begin practicing!',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                color: const Color(0xFFBF360C),
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const Text(' 🎉', style: TextStyle(fontSize: 20)),
-                          ],
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final isSmallScreen = constraints.maxWidth < 400;
+                            final emojiSize1 = isSmallScreen ? 22.0 : 28.0;
+                            final emojiSize2 = isSmallScreen ? 18.0 : 20.0;
+                            final titleSize = isSmallScreen ? 16.0 : 18.0;
+                            final subtitleSize = isSmallScreen ? 14.0 : 16.0;
+                            
+                            return Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('💫 ', style: TextStyle(fontSize: emojiSize1)),
+                                    Flexible(
+                                      child: Text(
+                                        'Ready to start your speech adventure?',
+                                        style: GoogleFonts.inter(
+                                          fontSize: titleSize,
+                                          color: const Color(0xFFE65100),
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Text(' 💫', style: TextStyle(fontSize: emojiSize1)),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('🎉 ', style: TextStyle(fontSize: emojiSize2)),
+                                    Flexible(
+                                      child: Text(
+                                        'Choose an activity to begin practicing!',
+                                        style: GoogleFonts.inter(
+                                          fontSize: subtitleSize,
+                                          color: const Color(0xFFBF360C),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Text(' 🎉', style: TextStyle(fontSize: emojiSize2)),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
