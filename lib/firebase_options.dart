@@ -48,6 +48,7 @@ class DefaultFirebaseOptions {
     authDomain: 'speakbuddy-1da6d.firebaseapp.com',
     storageBucket: 'speakbuddy-1da6d.firebasestorage.app',
     measurementId: 'G-WSEVWJD428',
+    databaseURL: 'https://speakbuddy-1da6d-default-rtdb.firebaseio.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -65,7 +66,7 @@ class DefaultFirebaseOptions {
     projectId: 'speakbuddy-1da6d',
     storageBucket: 'speakbuddy-1da6d.firebasestorage.app',
     iosClientId: '766247667208-n9hj75g4okq1chr4s1kdejdmon06agqd.apps.googleusercontent.com',
-    iosBundleId: 'com.example.myTemplate',
+    iosBundleId: 'com.speakbuddy.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -75,7 +76,7 @@ class DefaultFirebaseOptions {
     projectId: 'speakbuddy-1da6d',
     storageBucket: 'speakbuddy-1da6d.firebasestorage.app',
     iosClientId: '766247667208-n9hj75g4okq1chr4s1kdejdmon06agqd.apps.googleusercontent.com',
-    iosBundleId: 'com.example.myTemplate',
+    iosBundleId: 'com.speakbuddy.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

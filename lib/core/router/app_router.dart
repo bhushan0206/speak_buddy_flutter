@@ -15,19 +15,20 @@ class AppRouter {
       case '/story-adventure':
         final args = settings.arguments as Map<String, dynamic>?;
         final storyId = args?['storyId'] ?? 'demo_story_1';
-        final userId = args?['userId'] ?? 'demo_user';
+        final userId = args?['userId'];
+
+        if (userId == null) {
+          // Redirect to dashboard if no user ID provided
+          return MaterialPageRoute(builder: (_) => const DashboardPage());
+        }
+
         return MaterialPageRoute(
-          builder: (_) => StoryAdventurePage(
-            storyId: storyId,
-            userId: userId,
-          ),
+          builder: (_) => StoryAdventurePage(storyId: storyId, userId: userId),
         );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
-            body: Center(
-              child: Text('No route defined for ${settings.name}'),
-            ),
+            body: Center(child: Text('No route defined for ${settings.name}')),
           ),
         );
     }

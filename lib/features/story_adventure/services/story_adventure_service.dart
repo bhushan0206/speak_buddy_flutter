@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/story_models.dart';
 import '../data/demo_story_data.dart';
 import '../../../core/logging/app_logger.dart';
@@ -22,15 +22,21 @@ class StoryAdventureService {
         return _getDemoStoryChapter(chapterId);
       }
 
-      final doc =
-          await _firestore.collection('story_chapters').doc(chapterId).get();
+      final doc = await _firestore
+          .collection('story_chapters')
+          .doc(chapterId)
+          .get();
       if (doc.exists) {
         return StoryChapter.fromFirestore(doc);
       }
-      return null;
+      
+      // If no document found in Firestore, fall back to demo data
+      AppLogger.warning('Story chapter not found in Firestore, using demo data: $chapterId');
+      return _getDemoStoryChapter(chapterId);
     } catch (e) {
       AppLogger.warning(
-          'Error getting story chapter from Firestore, using demo data: $e');
+        'Error getting story chapter from Firestore, using demo data: $e',
+      );
       return _getDemoStoryChapter(chapterId);
     }
   }
@@ -41,19 +47,26 @@ class StoryAdventureService {
       // Check if Firestore is available
       if (!_isFirestoreAvailable()) {
         AppLogger.warning(
-            'Firestore not available, using demo AI character data');
+          'Firestore not available, using demo AI character data',
+        );
         return _getDemoAICharacter(characterId);
       }
 
-      final doc =
-          await _firestore.collection('ai_characters').doc(characterId).get();
+      final doc = await _firestore
+          .collection('ai_characters')
+          .doc(characterId)
+          .get();
       if (doc.exists) {
         return AICharacter.fromFirestore(doc);
       }
-      return null;
+      
+      // If no document found in Firestore, fall back to demo data
+      AppLogger.warning('AI character not found in Firestore, using demo data: $characterId');
+      return _getDemoAICharacter(characterId);
     } catch (e) {
       AppLogger.warning(
-          'Error getting AI character from Firestore, using demo data: $e');
+        'Error getting AI character from Firestore, using demo data: $e',
+      );
       return _getDemoAICharacter(characterId);
     }
   }
@@ -64,6 +77,19 @@ class StoryAdventureService {
       // Check if Firestore is available
       if (!_isFirestoreAvailable()) {
         AppLogger.warning('Firestore not available, using fallback progress');
+        return _createFallbackProgress(userId, storyId);
+      }
+
+      // Check if user is authenticated
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        AppLogger.warning('User not authenticated, using fallback progress');
+        return _createFallbackProgress(userId, storyId);
+      }
+
+      // Verify the user ID matches the authenticated user
+      if (currentUser.uid != userId) {
+        AppLogger.warning('User ID mismatch, using fallback progress');
         return _createFallbackProgress(userId, storyId);
       }
 
@@ -86,7 +112,8 @@ class StoryAdventureService {
               .add(newProgress.toMap());
         } catch (e) {
           AppLogger.warning(
-              'Could not save to Firestore, using local progress: $e');
+            'Could not save to Firestore, using local progress: $e',
+          );
         }
 
         return newProgress;
@@ -101,7 +128,7 @@ class StoryAdventureService {
   bool _isFirestoreAvailable() {
     try {
       // Simple check - in production you might want more sophisticated detection
-      return _firestore != null;
+      return true; // _firestore is always non-null since it's initialized
     } catch (e) {
       return false;
     }
@@ -137,8 +164,9 @@ class StoryAdventureService {
   AICharacter? _getDemoAICharacter(String characterId) {
     final demoCharacters = DemoStoryData.getDemoCharacters();
     try {
-      return demoCharacters
-          .firstWhere((character) => character.id == characterId);
+      return demoCharacters.firstWhere(
+        (character) => character.id == characterId,
+      );
     } catch (e) {
       AppLogger.warning('Demo character not found: $characterId');
       return demoCharacters.isNotEmpty ? demoCharacters.first : null;

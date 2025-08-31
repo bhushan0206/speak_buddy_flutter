@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../../core/theme/app_theme.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -9,40 +9,77 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFF0F9FF,
-      ), // Brighter light blue background
+      backgroundColor: AppTheme.primaryBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('🗣️ ', style: TextStyle(fontSize: 24)),
-            Text(
-              'SpeakBuddy',
-              style: GoogleFonts.inter(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF1E40AF),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '🗣️ ',
+                style: TextStyle(
+                  fontSize: AppTheme.getResponsiveFontSize(
+                    context,
+                    small: 20,
+                    medium: 24,
+                    large: 28,
+                  ),
+                ),
               ),
-            ),
-            const Text(' ✨', style: TextStyle(fontSize: 24)),
-          ],
+              Text(
+                'SpeakBuddy',
+                style: AppTheme.heading3.copyWith(
+                  fontSize: AppTheme.getResponsiveFontSize(
+                    context,
+                    small: 20,
+                    medium: 24,
+                    large: 28,
+                  ),
+                  color: AppTheme.primaryTeal,
+                ),
+              ),
+              Text(
+                ' ✨',
+                style: TextStyle(
+                  fontSize: AppTheme.getResponsiveFontSize(
+                    context,
+                    small: 20,
+                    medium: 24,
+                    large: 28,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 16),
+            margin: EdgeInsets.only(
+              right: AppTheme.getResponsiveSpacing(
+                context,
+                small: AppTheme.spacingM,
+                medium: AppTheme.spacingL,
+                large: AppTheme.spacingXL,
+              ),
+            ),
             decoration: BoxDecoration(
-              color: const Color(0xFFFF6B6B).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFFF6B6B), width: 2),
+              color: AppTheme.error.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppTheme.radiusL),
+              border: Border.all(color: AppTheme.error, width: 2),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.logout_rounded,
-                color: const Color(0xFFFF6B6B),
-                size: 24,
+                color: AppTheme.error,
+                size: AppTheme.getResponsiveFontSize(
+                  context,
+                  small: 20,
+                  medium: 24,
+                  large: 28,
+                ),
               ),
               onPressed: () => _showSignOutDialog(context),
             ),
@@ -54,48 +91,41 @@ class DashboardPage extends StatelessWidget {
           final user = authProvider.user;
 
           if (user == null) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6B6B)),
+                valueColor: AlwaysStoppedAnimation<Color>(AppTheme.error),
               ),
             );
           }
 
           return Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.all(
+              AppTheme.getResponsiveSpacing(
+                context,
+                small: AppTheme.spacingM,
+                medium: AppTheme.spacingL,
+                large: AppTheme.spacingXL,
+              ),
+            ),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Welcome section with enhanced vibrant cartoon styling
+                  // Welcome section
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(28.0),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFFFF6B6B), // Bright coral
-                          Color(0xFF4ECDC4), // Bright teal
-                          Color(0xFFFFD93D), // Bright yellow
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                    padding: EdgeInsets.all(
+                      AppTheme.getResponsiveSpacing(
+                        context,
+                        small: AppTheme.spacingL,
+                        medium: AppTheme.spacingXL,
+                        large: AppTheme.spacingXXL,
                       ),
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFFF6B6B).withValues(alpha: 0.4),
-                          blurRadius: 35,
-                          offset: const Offset(0, 18),
-                          spreadRadius: 4,
-                        ),
-                        BoxShadow(
-                          color: const Color(0xFF4ECDC4).withValues(alpha: 0.3),
-                          blurRadius: 25,
-                          offset: const Offset(8, 8),
-                          spreadRadius: 2,
-                        ),
-                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.primaryGradient,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusXXL),
+                      boxShadow: [AppTheme.elevatedShadow],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +133,7 @@ class DashboardPage extends StatelessWidget {
                         LayoutBuilder(
                           builder: (context, constraints) {
                             final isSmallScreen = constraints.maxWidth < 400;
-                            
+
                             if (isSmallScreen) {
                               // Stack layout for small screens
                               return Column(
@@ -116,16 +146,15 @@ class DashboardPage extends StatelessWidget {
                                         color: Colors.white,
                                         width: 4,
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.3),
-                                          blurRadius: 15,
-                                          offset: const Offset(0, 8),
-                                        ),
-                                      ],
+                                      boxShadow: [AppTheme.subtleShadow],
                                     ),
                                     child: CircleAvatar(
-                                      radius: 35,
+                                      radius: AppTheme.getResponsiveSpacing(
+                                        context,
+                                        small: 30,
+                                        medium: 35,
+                                        large: 40,
+                                      ),
                                       backgroundColor: Colors.white,
                                       backgroundImage: user.photoURL != null
                                           ? NetworkImage(user.photoURL!)
@@ -139,64 +168,120 @@ class DashboardPage extends StatelessWidget {
                                                       ?.substring(0, 1)
                                                       .toUpperCase() ??
                                                   'U',
-                                              style: const TextStyle(
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFFF6B6B),
+                                              style: AppTheme.heading4.copyWith(
+                                                fontSize:
+                                                    AppTheme.getResponsiveFontSize(
+                                                      context,
+                                                      small: 24,
+                                                      medium: 28,
+                                                      large: 32,
+                                                    ),
+                                                color: AppTheme.primaryCoral,
                                               ),
                                             )
                                           : null,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(
+                                    height: AppTheme.getResponsiveSpacing(
+                                      context,
+                                      small: AppTheme.spacingM,
+                                      medium: AppTheme.spacingL,
+                                      large: AppTheme.spacingXL,
+                                    ),
+                                  ),
                                   // Welcome text centered
                                   Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          const Text(
+                                          Text(
                                             '🎉 ',
-                                            style: TextStyle(fontSize: 18),
+                                            style: TextStyle(
+                                              fontSize:
+                                                  AppTheme.getResponsiveFontSize(
+                                                    context,
+                                                    small: 16,
+                                                    medium: 18,
+                                                    large: 20,
+                                                  ),
+                                            ),
                                           ),
                                           Flexible(
                                             child: Text(
                                               'Welcome to your speech journey!',
-                                              style: GoogleFonts.inter(
-                                                fontSize: 16,
+                                              style: AppTheme.bodyMedium.copyWith(
+                                                fontSize:
+                                                    AppTheme.getResponsiveFontSize(
+                                                      context,
+                                                      small: 14,
+                                                      medium: 16,
+                                                      large: 18,
+                                                    ),
                                                 color: Colors.white.withValues(
                                                   alpha: 0.95,
                                                 ),
                                                 fontWeight: FontWeight.w600,
                                               ),
                                               textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 8),
+                                      SizedBox(
+                                        height: AppTheme.getResponsiveSpacing(
+                                          context,
+                                          small: AppTheme.spacingS,
+                                          medium: AppTheme.spacingM,
+                                          large: AppTheme.spacingL,
+                                        ),
+                                      ),
                                       Text(
                                         user.displayName ?? 'Speech Buddy',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold,
+                                        style: AppTheme.heading2.copyWith(
+                                          fontSize:
+                                              AppTheme.getResponsiveFontSize(
+                                                context,
+                                                small: 24,
+                                                medium: 28,
+                                                large: 32,
+                                              ),
                                           color: Colors.white,
-                                          height: 1.1,
                                         ),
                                         textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                       if (user.email != null) ...[
-                                        const SizedBox(height: 6),
+                                        SizedBox(
+                                          height: AppTheme.getResponsiveSpacing(
+                                            context,
+                                            small: 4,
+                                            medium: 6,
+                                            large: 8,
+                                          ),
+                                        ),
                                         Text(
                                           user.email!,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 14,
+                                          style: AppTheme.bodySmall.copyWith(
+                                            fontSize:
+                                                AppTheme.getResponsiveFontSize(
+                                                  context,
+                                                  small: 12,
+                                                  medium: 14,
+                                                  large: 16,
+                                                ),
                                             color: Colors.white.withValues(
                                               alpha: 0.9,
                                             ),
-                                            fontWeight: FontWeight.w500,
                                           ),
                                           textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
                                     ],
@@ -207,7 +292,7 @@ class DashboardPage extends StatelessWidget {
                               // Row layout for larger screens
                               return Row(
                                 children: [
-                                  // Enhanced avatar with cartoon styling
+                                  // Avatar
                                   Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -215,16 +300,15 @@ class DashboardPage extends StatelessWidget {
                                         color: Colors.white,
                                         width: 4,
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.3),
-                                          blurRadius: 15,
-                                          offset: const Offset(0, 8),
-                                        ),
-                                      ],
+                                      boxShadow: [AppTheme.subtleShadow],
                                     ),
                                     child: CircleAvatar(
-                                      radius: 40,
+                                      radius: AppTheme.getResponsiveSpacing(
+                                        context,
+                                        small: 30,
+                                        medium: 35,
+                                        large: 40,
+                                      ),
                                       backgroundColor: Colors.white,
                                       backgroundImage: user.photoURL != null
                                           ? NetworkImage(user.photoURL!)
@@ -238,61 +322,118 @@ class DashboardPage extends StatelessWidget {
                                                       ?.substring(0, 1)
                                                       .toUpperCase() ??
                                                   'U',
-                                              style: const TextStyle(
-                                                fontSize: 32,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFFF6B6B),
+                                              style: AppTheme.heading4.copyWith(
+                                                fontSize:
+                                                    AppTheme.getResponsiveFontSize(
+                                                      context,
+                                                      small: 24,
+                                                      medium: 28,
+                                                      large: 32,
+                                                    ),
+                                                color: AppTheme.primaryCoral,
                                               ),
                                             )
                                           : null,
                                     ),
                                   ),
-                                  const SizedBox(width: 24),
+                                  SizedBox(
+                                    width: AppTheme.getResponsiveSpacing(
+                                      context,
+                                      small: AppTheme.spacingM,
+                                      medium: AppTheme.spacingL,
+                                      large: AppTheme.spacingXL,
+                                    ),
+                                  ),
+                                  // Welcome text
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
-                                            const Text(
+                                            Text(
                                               '🎉 ',
-                                              style: TextStyle(fontSize: 20),
+                                              style: TextStyle(
+                                                fontSize:
+                                                    AppTheme.getResponsiveFontSize(
+                                                      context,
+                                                      small: 16,
+                                                      medium: 18,
+                                                      large: 20,
+                                                    ),
+                                              ),
                                             ),
                                             Flexible(
                                               child: Text(
                                                 'Welcome to your speech journey!',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 18,
-                                                  color: Colors.white.withValues(
-                                                    alpha: 0.95,
-                                                  ),
+                                                style: AppTheme.bodyMedium.copyWith(
+                                                  fontSize:
+                                                      AppTheme.getResponsiveFontSize(
+                                                        context,
+                                                        small: 14,
+                                                        medium: 16,
+                                                        large: 18,
+                                                      ),
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.95),
                                                   fontWeight: FontWeight.w600,
                                                 ),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          user.displayName ?? 'Speech Buddy',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 32,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            height: 1.1,
+                                        SizedBox(
+                                          height: AppTheme.getResponsiveSpacing(
+                                            context,
+                                            small: AppTheme.spacingS,
+                                            medium: AppTheme.spacingM,
+                                            large: AppTheme.spacingL,
                                           ),
                                         ),
+                                        Text(
+                                          user.displayName ?? 'Speech Buddy',
+                                          style: AppTheme.heading2.copyWith(
+                                            fontSize:
+                                                AppTheme.getResponsiveFontSize(
+                                                  context,
+                                                  small: 24,
+                                                  medium: 28,
+                                                  large: 32,
+                                                ),
+                                            color: Colors.white,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                         if (user.email != null) ...[
-                                          const SizedBox(height: 6),
+                                          SizedBox(
+                                            height:
+                                                AppTheme.getResponsiveSpacing(
+                                                  context,
+                                                  small: 4,
+                                                  medium: 6,
+                                                  large: 8,
+                                                ),
+                                          ),
                                           Text(
                                             user.email!,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 16,
+                                            style: AppTheme.bodySmall.copyWith(
+                                              fontSize:
+                                                  AppTheme.getResponsiveFontSize(
+                                                    context,
+                                                    small: 12,
+                                                    medium: 14,
+                                                    large: 16,
+                                                  ),
                                               color: Colors.white.withValues(
                                                 alpha: 0.9,
                                               ),
-                                              fontWeight: FontWeight.w500,
                                             ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ],
@@ -303,229 +444,227 @@ class DashboardPage extends StatelessWidget {
                             }
                           },
                         ),
-                        const SizedBox(height: 28),
-                        // Status indicator with cartoon styling
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.25),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.4),
-                              width: 2,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: 12,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF4ECDC4),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF4ECDC4,
-                                      ).withValues(alpha: 0.6),
-                                      blurRadius: 8,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Ready to practice! 🚀',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 36),
+                  SizedBox(
+                    height: AppTheme.getResponsiveSpacing(
+                      context,
+                      small: AppTheme.spacingL,
+                      medium: AppTheme.spacingXL,
+                      large: AppTheme.spacingXXL,
+                    ),
+                  ),
 
-                  // Speech therapy actions section with cartoon styling
+                  // Speech Activities section
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final isSmallScreen = constraints.maxWidth < 400;
-                      final titleSize = isSmallScreen ? 22.0 : 28.0;
-                      final emojiSize = isSmallScreen ? 22.0 : 28.0;
-                      
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('🎯 ', style: TextStyle(fontSize: emojiSize)),
-                          Flexible(
-                            child: Text(
-                              'Speech Activities',
-                              style: GoogleFonts.inter(
-                                fontSize: titleSize,
-                                fontWeight: FontWeight.w800,
-                                color: const Color(0xFF1E40AF),
-                                letterSpacing: -0.3,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '🎯 ',
+                                style: TextStyle(
+                                  fontSize: AppTheme.getResponsiveFontSize(
+                                    context,
+                                    small: 20,
+                                    medium: 24,
+                                    large: 28,
+                                  ),
+                                ),
                               ),
-                              textAlign: TextAlign.center,
+                              Text(
+                                'Speech Activities',
+                                style: AppTheme.heading3.copyWith(
+                                  fontSize: AppTheme.getResponsiveFontSize(
+                                    context,
+                                    small: 20,
+                                    medium: 24,
+                                    large: 28,
+                                  ),
+                                  color: AppTheme.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                ' 🎯',
+                                style: TextStyle(
+                                  fontSize: AppTheme.getResponsiveFontSize(
+                                    context,
+                                    small: 20,
+                                    medium: 24,
+                                    large: 28,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: AppTheme.getResponsiveSpacing(
+                              context,
+                              small: AppTheme.spacingM,
+                              medium: AppTheme.spacingL,
+                              large: AppTheme.spacingXL,
                             ),
                           ),
-                          Text(' 🎯', style: TextStyle(fontSize: emojiSize)),
+
+                          // Action cards grid
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              final isSmallScreen = constraints.maxWidth < 600;
+                              final crossAxisCount = isSmallScreen ? 1 : 2;
+                              final childAspectRatio = isSmallScreen
+                                  ? 1.2
+                                  : 1.0;
+                              final spacing = AppTheme.getResponsiveSpacing(
+                                context,
+                                small: AppTheme.spacingM,
+                                medium: AppTheme.spacingL,
+                                large: AppTheme.spacingXL,
+                              );
+
+                              return GridView.count(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                crossAxisCount: crossAxisCount,
+                                crossAxisSpacing: spacing,
+                                mainAxisSpacing: spacing,
+                                childAspectRatio: childAspectRatio,
+                                children: [
+                                  _buildActionCard(
+                                    context,
+                                    title: 'Story Adventure',
+                                    description:
+                                        'Embark on interactive storytelling with AI companions',
+                                    icon: Icons.auto_stories,
+                                    color: AppTheme.primaryCoral,
+                                    emoji: '📚',
+                                    onTap: () {
+                                      final authProvider = context
+                                          .read<AuthProvider>();
+                                      if (authProvider.isAuthenticated &&
+                                          authProvider.user != null) {
+                                        Navigator.of(context).pushNamed(
+                                          '/story-adventure',
+                                          arguments: {
+                                            'storyId': 'demo_story_1',
+                                            'userId': authProvider.user!.uid,
+                                          },
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Please sign in to access Story Adventure',
+                                            ),
+                                            backgroundColor: AppTheme.error,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  _buildActionCard(
+                                    context,
+                                    title: 'Voice Practice',
+                                    description:
+                                        'Practice pronunciation with real-time feedback',
+                                    icon: Icons.mic,
+                                    color: AppTheme.primaryTeal,
+                                    emoji: '🎤',
+                                    onTap: () {
+                                      // TODO: Implement voice practice
+                                    },
+                                  ),
+                                  _buildActionCard(
+                                    context,
+                                    title: 'Progress Tracker',
+                                    description:
+                                        'Monitor your speech development journey',
+                                    icon: Icons.trending_up,
+                                    color: AppTheme.primaryBlue,
+                                    emoji: '📊',
+                                    onTap: () {
+                                      // TODO: Implement progress tracking
+                                    },
+                                  ),
+                                  _buildActionCard(
+                                    context,
+                                    title: 'Fun Games',
+                                    description:
+                                        'Learn through engaging speech games',
+                                    icon: Icons.games,
+                                    color: AppTheme.primaryYellow,
+                                    emoji: '🎮',
+                                    onTap: () {
+                                      // TODO: Implement speech games
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ],
                       );
                     },
                   ),
 
-                  const SizedBox(height: 24),
-
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final isSmallScreen = constraints.maxWidth < 400;
-                      final crossAxisCount = isSmallScreen ? 1 : 2;
-                      final spacing = isSmallScreen ? 16.0 : 24.0;
-                      final childAspectRatio = isSmallScreen ? 1.3 : 1.1;
-                      
-                      return GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: spacing,
-                        mainAxisSpacing: spacing,
-                        childAspectRatio: childAspectRatio,
-                        children: [
-                      _buildActionCard(
-                        context,
-                        'Story Adventure',
-                        Icons.auto_stories,
-                        const Color(0xFFFF6B6B), // Bright coral
-                        '📚',
-                        () => Navigator.pushNamed(
-                          context,
-                          '/story-adventure',
-                          arguments: {
-                            'storyId': 'demo_story_1',
-                            'userId': 'demo_user',
-                          },
-                        ),
-                      ),
-                      _buildActionCard(
-                        context,
-                        'Speech Games',
-                        Icons.games,
-                        const Color(0xFF4ECDC4), // Bright teal
-                        '🎮',
-                        () => _showComingSoon(context),
-                      ),
-                      _buildActionCard(
-                        context,
-                        'Progress',
-                        Icons.trending_up,
-                        const Color(0xFF45B7D1), // Bright blue
-                        '📈',
-                        () => _showComingSoon(context),
-                      ),
-                      _buildActionCard(
-                        context,
-                        'Parent Portal',
-                        Icons.family_restroom,
-                        const Color(0xFFFFD93D), // Bright yellow
-                        '👨‍👩‍👧‍👦',
-                        () => _showComingSoon(context),
-                      ),
-                    ],
-                  );
-                },
-
-                  const SizedBox(height: 48),
-
-                  // Enhanced footer with cartoon styling
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(28),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFFFFF3E0).withValues(alpha: 0.9),
-                          const Color(0xFFFFE0B2).withValues(alpha: 0.7),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(
-                        color: const Color(0xFFFFB74D),
-                        width: 3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFFFB74D).withValues(alpha: 0.3),
-                          blurRadius: 25,
-                          offset: const Offset(0, 12),
-                          spreadRadius: 2,
-                        ),
-                      ],
+                  SizedBox(
+                    height: AppTheme.getResponsiveSpacing(
+                      context,
+                      small: AppTheme.spacingL,
+                      medium: AppTheme.spacingXL,
+                      large: AppTheme.spacingXXL,
                     ),
+                  ),
+
+                  // Footer
+                  Center(
                     child: Column(
                       children: [
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            final isSmallScreen = constraints.maxWidth < 400;
-                            final emojiSize1 = isSmallScreen ? 22.0 : 28.0;
-                            final emojiSize2 = isSmallScreen ? 18.0 : 20.0;
-                            final titleSize = isSmallScreen ? 16.0 : 18.0;
-                            final subtitleSize = isSmallScreen ? 14.0 : 16.0;
-                            
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('💫 ', style: TextStyle(fontSize: emojiSize1)),
-                                    Flexible(
-                                      child: Text(
-                                        'Ready to start your speech adventure?',
-                                        style: GoogleFonts.inter(
-                                          fontSize: titleSize,
-                                          color: const Color(0xFFE65100),
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Text(' 💫', style: TextStyle(fontSize: emojiSize1)),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('🎉 ', style: TextStyle(fontSize: emojiSize2)),
-                                    Flexible(
-                                      child: Text(
-                                        'Choose an activity to begin practicing!',
-                                        style: GoogleFonts.inter(
-                                          fontSize: subtitleSize,
-                                          color: const Color(0xFFBF360C),
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Text(' 🎉', style: TextStyle(fontSize: emojiSize2)),
-                                  ],
-                                ),
-                              ],
-                            );
-                          },
+                        Text(
+                          'Ready to improve your speech?',
+                          style: AppTheme.bodyMedium.copyWith(
+                            fontSize: AppTheme.getResponsiveFontSize(
+                              context,
+                              small: 14,
+                              medium: 16,
+                              large: 18,
+                            ),
+                            color: AppTheme.textSecondary,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(
+                          height: AppTheme.getResponsiveSpacing(
+                            context,
+                            small: AppTheme.spacingS,
+                            medium: AppTheme.spacingM,
+                            large: AppTheme.spacingL,
+                          ),
+                        ),
+                        Text(
+                          'Start with Story Adventure! 🚀',
+                          style: AppTheme.bodySmall.copyWith(
+                            fontSize: AppTheme.getResponsiveFontSize(
+                              context,
+                              small: 12,
+                              medium: 14,
+                              large: 16,
+                            ),
+                            color: AppTheme.textTertiary,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
@@ -540,207 +679,169 @@ class DashboardPage extends StatelessWidget {
   }
 
   Widget _buildActionCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color color,
-    String emoji,
-    VoidCallback onTap,
-  ) {
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 400),
-      tween: Tween(begin: 0.0, end: 1.0),
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: 0.9 + (0.1 * value),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.white, color.withValues(alpha: 0.08)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    BuildContext context, {
+    required String title,
+    required String description,
+    required IconData icon,
+    required Color color,
+    required String emoji,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: AppTheme.actionCardDecoration.copyWith(
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppTheme.radiusXL),
+          child: Padding(
+            padding: EdgeInsets.all(
+              AppTheme.getResponsiveSpacing(
+                context,
+                small: AppTheme.spacingM,
+                medium: AppTheme.spacingL,
+                large: AppTheme.spacingXL,
               ),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: color.withValues(alpha: 0.4), width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.25),
-                  blurRadius: 25,
-                  offset: const Offset(0, 12),
-                  spreadRadius: 3,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Emoji and icon
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      emoji,
+                      style: TextStyle(
+                        fontSize: AppTheme.getResponsiveFontSize(
+                          context,
+                          small: 20,
+                          medium: 24,
+                          large: 28,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: AppTheme.getResponsiveSpacing(
+                        context,
+                        small: AppTheme.spacingS,
+                        medium: AppTheme.spacingM,
+                        large: AppTheme.spacingL,
+                      ),
+                    ),
+                    Icon(
+                      icon,
+                      color: color,
+                      size: AppTheme.getResponsiveFontSize(
+                        context,
+                        small: 20,
+                        medium: 24,
+                        large: 28,
+                      ),
+                    ),
+                  ],
                 ),
-                BoxShadow(
-                  color: color.withValues(alpha: 0.15),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                  spreadRadius: 1,
+
+                SizedBox(
+                  height: AppTheme.getResponsiveSpacing(
+                    context,
+                    small: AppTheme.spacingM,
+                    medium: AppTheme.spacingL,
+                    large: AppTheme.spacingXL,
+                  ),
+                ),
+
+                // Title
+                Text(
+                  title,
+                  style: AppTheme.heading4.copyWith(
+                    fontSize: AppTheme.getResponsiveFontSize(
+                      context,
+                      small: 16,
+                      medium: 18,
+                      large: 20,
+                    ),
+                    color: color,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                SizedBox(
+                  height: AppTheme.getResponsiveSpacing(
+                    context,
+                    small: AppTheme.spacingS,
+                    medium: AppTheme.spacingM,
+                    large: AppTheme.spacingL,
+                  ),
+                ),
+
+                // Description
+                Text(
+                  description,
+                  style: AppTheme.bodySmall.copyWith(
+                    fontSize: AppTheme.getResponsiveFontSize(
+                      context,
+                      small: 12,
+                      medium: 14,
+                      large: 16,
+                    ),
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(24),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Emoji decoration
-                      Text(emoji, style: const TextStyle(fontSize: 36)),
-                      const SizedBox(height: 12),
-
-                      // Icon container with enhanced styling
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              color.withValues(alpha: 0.15),
-                              color.withValues(alpha: 0.25),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: color.withValues(alpha: 0.5),
-                            width: 2,
-                          ),
-                        ),
-                        child: Icon(icon, color: color, size: 30),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Title
-                      Text(
-                        title,
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF2D3748),
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // Subtitle
-                      Text(
-                        'Tap to start',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: const Color(0xFF4A5568),
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
   void _showSignOutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Row(
-          children: [
-            const Text('🚪 ', style: TextStyle(fontSize: 24)),
-            Text(
-              'Sign Out',
-              style: GoogleFonts.inter(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF2D3748),
-              ),
-            ),
-          ],
-        ),
-        content: Text(
-          'Are you sure you want to sign out?',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: const Color(0xFF4A5568),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.secondaryBackground,
+          title: Text(
+            'Sign Out',
+            style: AppTheme.heading4.copyWith(color: AppTheme.textPrimary),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.inter(
-                color: const Color(0xFF4A5568),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+          content: Text(
+            'Are you sure you want to sign out?',
+            style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<AuthProvider>().signOut();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF6B6B),
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-            ),
-            child: Text(
-              'Sign Out',
-              style: GoogleFonts.inter(fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showComingSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Text('🚧 ', style: TextStyle(fontSize: 20)),
-            Expanded(
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'This feature is coming soon!',
-                style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                'Cancel',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.primaryTeal,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<AuthProvider>().signOut();
+              },
+              style: AppTheme.primaryButton.copyWith(
+                backgroundColor: MaterialStateProperty.all(AppTheme.error),
+              ),
+              child: Text(
+                'Sign Out',
+                style: AppTheme.bodyMedium.copyWith(color: Colors.white),
               ),
             ),
           ],
-        ),
-        backgroundColor: const Color(0xFFFF6B6B),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        margin: const EdgeInsets.all(20),
-        duration: const Duration(seconds: 3),
-      ),
+        );
+      },
     );
   }
 }

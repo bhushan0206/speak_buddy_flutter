@@ -251,7 +251,7 @@ class StoryAdventureProvider extends ChangeNotifier {
     }
 
     // Chapter completion achievements
-    if (completedChapters.length >= 1) {
+    if (completedChapters.isNotEmpty) {
       achievements.add('📚 Story Explorer');
     }
     if (completedChapters.length >= 3) {
