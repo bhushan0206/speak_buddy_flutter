@@ -276,11 +276,18 @@ class DashboardPage extends StatelessWidget {
                     children: [
                       _buildActionCard(
                         context,
-                        'Practice Words',
-                        Icons.record_voice_over,
+                        'Story Adventure',
+                        Icons.auto_stories,
                         const Color(0xFFFF6B6B), // Bright coral
-                        '🗣️',
-                        () => _showComingSoon(context),
+                        '📚',
+                        () => Navigator.pushNamed(
+                          context,
+                          '/story-adventure',
+                          arguments: {
+                            'storyId': 'demo_story_1',
+                            'userId': 'demo_user',
+                          },
+                        ),
                       ),
                       _buildActionCard(
                         context,
