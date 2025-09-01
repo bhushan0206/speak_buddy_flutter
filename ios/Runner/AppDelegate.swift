@@ -8,6 +8,12 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
+    
+    // Register custom voice recognition plugin
+    if #available(iOS 10.0, *) {
+      VoiceRecognitionPlugin.register(with: self.registrar(forPlugin: "VoiceRecognitionPlugin")!)
+    }
+    
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

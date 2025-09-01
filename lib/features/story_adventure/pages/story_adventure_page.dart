@@ -336,6 +336,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Story Progress Section
               if (provider.userProgress != null)
@@ -519,33 +520,43 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             ),
           ),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: chapter.targetWords
-                .map(
-                  (word) => Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryCoral.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: AppTheme.primaryCoral,
-                        width: 1,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: chapter.targetWords
+                    .map(
+                      (word) => Container(
+                        constraints: BoxConstraints(
+                          maxWidth: constraints.maxWidth * 0.4,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryCoral.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppTheme.primaryCoral,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          word,
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.primaryCoral,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      word,
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: AppTheme.primaryCoral,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
+                    )
+                    .toList(),
+              );
+            },
           ),
           const SizedBox(height: 20),
           Text(
@@ -709,120 +720,277 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
 
   Widget _buildVoiceSection(StoryAdventureProvider provider) {
     final lastResult = provider.lastVoiceResult;
-    final targetWords = provider.currentChapter!.targetWords;
+    final chapter = provider.currentChapter!;
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.secondaryBackground,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [AppTheme.elevatedShadow],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isSmallScreen = constraints.maxWidth < 300;
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(isSmallScreen ? 12.0 : 16.0),
+          decoration: BoxDecoration(
+            color: AppTheme.secondaryBackground,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [AppTheme.elevatedShadow],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('🎤 ', style: TextStyle(fontSize: 24)),
-              Text(
-                'Voice Practice',
-                style: AppTheme.heading4.copyWith(
-                  color: AppTheme.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Practice saying these words: ${targetWords.join(', ')}',
-            style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () => provider.processVoiceInput('demo_audio'),
-            icon: const Icon(Icons.mic),
-            label: Text(
-              'Start Voice Practice',
-              style: AppTheme.bodyMedium.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryCoral,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
-          if (lastResult != null) ...[
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: lastResult.isSuccess
-                    ? AppTheme.primaryTeal.withValues(alpha: 0.1)
-                    : AppTheme.error.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: lastResult.isSuccess
-                      ? AppTheme.primaryTeal
-                      : AppTheme.error,
-                  width: 1,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    'Voice Recognition Result:',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: lastResult.isSuccess
-                          ? AppTheme.primaryTeal
-                          : AppTheme.error,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Recognized: "${lastResult.recognizedText}"',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    'Confidence: ${(lastResult.confidence * 100).round()}%',
-                    style: AppTheme.bodyMedium.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
-                  ),
-                  if (lastResult.wordAccuracy.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      'Word Accuracy:',
-                      style: AppTheme.bodyMedium.copyWith(
+                  const Text('🎤 ', style: TextStyle(fontSize: 24)),
+                  Expanded(
+                    child: Text(
+                      'Voice Practice',
+                      style: AppTheme.heading4.copyWith(
                         color: AppTheme.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    ...lastResult.wordAccuracy.entries.map(
-                      (entry) => Text(
-                        '${entry.key}: ${(entry.value * 100).round()}%',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Practice saying these words: ${chapter.targetWords.join(', ')}',
+                style: AppTheme.bodyMedium.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                textAlign: TextAlign.left,
+              ),
+              const SizedBox(height: 16),
+              // Voice Practice Instructions
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryTeal.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppTheme.primaryTeal, width: 1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: AppTheme.primaryTeal,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Voice Practice Instructions:',
+                            style: AppTheme.bodyMedium.copyWith(
+                              color: AppTheme.primaryTeal,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '🎯 Practice saying these words: ${chapter.targetWords.join(', ')}',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.textSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.left,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '🎤 Click "Start Voice Practice" and speak clearly',
+                      style: AppTheme.bodySmall.copyWith(
+                        color: AppTheme.textSecondary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isSmallScreen = constraints.maxWidth < 300;
+                  return ElevatedButton.icon(
+                    onPressed: provider.isListening
+                        ? () => provider.stopVoiceRecognition()
+                        : () => provider.processVoiceInput(''),
+                    icon: Icon(
+                      provider.isListening ? Icons.stop : Icons.mic,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      provider.isListening
+                          ? 'Stop Listening'
+                          : 'Start Voice Practice',
+                      style: AppTheme.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: provider.isListening
+                          ? AppTheme.error
+                          : AppTheme.primaryCoral,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isSmallScreen ? 16 : 24,
+                        vertical: isSmallScreen ? 12 : 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              // Real-time speech feedback
+              if (provider.isListening) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryCoral.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppTheme.primaryCoral, width: 1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.record_voice_over,
+                            color: AppTheme.primaryCoral,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              '🎤 Listening... Speak now!',
+                              style: AppTheme.bodySmall.copyWith(
+                                color: AppTheme.primaryCoral,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      // Real-time speech display
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryCoral.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppTheme.primaryCoral.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Text(
+                          provider.lastVoiceResult?.recognizedText.isNotEmpty ==
+                                  true
+                              ? '🗣️ "${provider.lastVoiceResult!.recognizedText}"'
+                              : '🎯 Start speaking to see your words appear here...',
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.textPrimary,
+                            fontStyle:
+                                provider
+                                        .lastVoiceResult
+                                        ?.recognizedText
+                                        .isNotEmpty ==
+                                    true
+                                ? FontStyle.normal
+                                : FontStyle.italic,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              if (lastResult != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: lastResult.isSuccess
+                        ? AppTheme.primaryTeal.withValues(alpha: 0.1)
+                        : AppTheme.error.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: lastResult.isSuccess
+                          ? AppTheme.primaryTeal
+                          : AppTheme.error,
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Voice Recognition Result:',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: lastResult.isSuccess
+                              ? AppTheme.primaryTeal
+                              : AppTheme.error,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Recognized: "${lastResult.recognizedText}"',
+                        style: AppTheme.bodyMedium.copyWith(
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        'Confidence: ${(lastResult.confidence * 100).round()}%',
                         style: AppTheme.bodyMedium.copyWith(
                           color: AppTheme.textSecondary,
                         ),
                       ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
+                      if (lastResult.wordAccuracy.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Word Accuracy:',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ...lastResult.wordAccuracy.entries.map(
+                          (entry) => Text(
+                            '${entry.key}: ${(entry.value * 100).round()}%',
+                            style: AppTheme.bodyMedium.copyWith(
+                              color: AppTheme.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -915,21 +1083,28 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
               vertical: 12,
             ),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: color, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, color: color, size: iconSize),
+                Icon(icon, color: Colors.white, size: iconSize),
                 const SizedBox(height: 8),
                 Text(
                   label,
                   style: AppTheme.bodyMedium.copyWith(
                     fontSize: fontSize,
                     fontWeight: FontWeight.w600,
-                    color: color,
+                    color: Colors.white,
                   ),
                 ),
               ],

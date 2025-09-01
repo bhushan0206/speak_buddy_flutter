@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import '../models/story_models.dart';
 import '../services/story_adventure_service.dart';
+import '../services/voice_recognition_service.dart';
 import '../../../core/logging/app_logger.dart';
 
 class StoryAdventureProvider extends ChangeNotifier {
   StoryAdventureService? _service;
+  VoiceRecognitionService? _voiceService;
 
   // State variables
   StoryChapter? _currentChapter;
@@ -13,6 +15,7 @@ class StoryAdventureProvider extends ChangeNotifier {
   AIResponse? _lastAIResponse;
   VoiceRecognitionResult? _lastVoiceResult;
   bool _isLoading = false;
+  bool _isListening = false; // Added for voice recognition state
   String _errorMessage = '';
 
   // Getters
@@ -22,12 +25,19 @@ class StoryAdventureProvider extends ChangeNotifier {
   AIResponse? get lastAIResponse => _lastAIResponse;
   VoiceRecognitionResult? get lastVoiceResult => _lastVoiceResult;
   bool get isLoading => _isLoading;
+  bool get isListening => _isListening; // Added for voice recognition state
   String get errorMessage => _errorMessage;
 
   // Get the service instance (lazy initialization)
   StoryAdventureService get _getService {
     _service ??= StoryAdventureService();
     return _service!;
+  }
+
+  // Get the voice service instance (lazy initialization)
+  VoiceRecognitionService get _getVoiceService {
+    _voiceService ??= VoiceRecognitionService();
+    return _voiceService!;
   }
 
   // Initialize the provider
@@ -162,36 +172,75 @@ class StoryAdventureProvider extends ChangeNotifier {
   Future<void> processVoiceInput(String audioFile) async {
     try {
       _setLoading(true);
+      _errorMessage = '';
 
       if (_currentChapter == null) {
         throw Exception('No active story');
       }
 
-      _lastVoiceResult = await _getService.processVoiceInput(
-        audioFile,
-        _currentChapter!.targetWords,
-      );
+      // Initialize voice recognition if not already done
+      final voiceService = _getVoiceService;
+      final isInitialized = await voiceService.initialize();
 
-      // Update word accuracy in progress
-      if (_userProgress != null && _lastVoiceResult != null) {
-        final updatedProgress = _userProgress!.copyWith(
-          wordAccuracy: {
-            ..._userProgress!.wordAccuracy,
-            ..._lastVoiceResult!.wordAccuracy,
-          },
-        );
-
-        _userProgress = updatedProgress;
-        await _getService.updateUserProgress(updatedProgress);
+      if (!isInitialized) {
+        throw Exception('Voice recognition not available');
       }
 
+      // Start listening for speech
+      _isListening = true;
       notifyListeners();
+
+      final success = await voiceService.startListening(
+        onResult: (String recognizedText) async {
+          // Process the recognized text
+          _lastVoiceResult = await voiceService.processVoiceInput(
+            recognizedText,
+            _currentChapter!.targetWords,
+          );
+
+          // Update word accuracy in progress
+          if (_userProgress != null && _lastVoiceResult != null) {
+            final updatedProgress = _userProgress!.copyWith(
+              wordAccuracy: {
+                ..._userProgress!.wordAccuracy,
+                ..._lastVoiceResult!.wordAccuracy,
+              },
+            );
+
+            _userProgress = updatedProgress;
+            await _getService.updateUserProgress(updatedProgress);
+          }
+
+          _isListening = false;
+          notifyListeners();
+        },
+        onComplete: () {
+          _isListening = false;
+          notifyListeners();
+        },
+      );
+
+      if (!success) {
+        throw Exception('Failed to start voice recognition');
+      }
     } catch (e) {
       AppLogger.error('Error processing voice input: $e');
       _errorMessage = 'Failed to process voice input: $e';
+      _isListening = false;
       notifyListeners();
     } finally {
       _setLoading(false);
+    }
+  }
+
+  // Stop voice recognition
+  Future<void> stopVoiceRecognition() async {
+    try {
+      await _getVoiceService.stopListening();
+      _isListening = false;
+      notifyListeners();
+    } catch (e) {
+      AppLogger.error('Error stopping voice recognition: $e');
     }
   }
 
