@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/story_adventure_provider.dart';
 import '../models/story_models.dart';
 import '../../../core/theme/app_theme.dart';
+import 'user_preferences_page.dart';
 
 class StoryAdventurePage extends StatefulWidget {
   final String storyId;
@@ -48,8 +49,8 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
 
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-    );
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     _fadeController.forward();
     _slideController.forward();
@@ -139,9 +140,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
               const Text('📚 ', style: TextStyle(fontSize: 24)),
               Text(
                 'Story Adventure',
-                style: AppTheme.heading4.copyWith(
-                  color: AppTheme.primaryCoral,
-                ),
+                style: AppTheme.heading4.copyWith(color: AppTheme.primaryCoral),
               ),
               const Text(' ✨', style: TextStyle(fontSize: 24)),
             ],
@@ -164,6 +163,22 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             ),
           ),
           onPressed: () => _showProgressDialog(context),
+        ),
+        IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryYellow.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.primaryYellow, width: 2),
+            ),
+            child: Icon(
+              Icons.settings,
+              color: AppTheme.primaryYellow,
+              size: 20,
+            ),
+          ),
+          onPressed: () => _navigateToPreferences(context),
         ),
       ],
     );
@@ -226,18 +241,12 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(color: AppTheme.error, width: 3),
               ),
-              child: Icon(
-                Icons.error_outline,
-                color: AppTheme.error,
-                size: 50,
-              ),
+              child: Icon(Icons.error_outline, color: AppTheme.error, size: 50),
             ),
             const SizedBox(height: 24),
             Text(
               'Oops! Something went wrong',
-              style: AppTheme.heading3.copyWith(
-                color: AppTheme.textPrimary,
-              ),
+              style: AppTheme.heading3.copyWith(color: AppTheme.textPrimary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -301,9 +310,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             const SizedBox(height: 24),
             Text(
               'No story chapter available',
-              style: AppTheme.heading3.copyWith(
-                color: AppTheme.textPrimary,
-              ),
+              style: AppTheme.heading3.copyWith(color: AppTheme.textPrimary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -331,17 +338,20 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Story Progress Section
-              if (provider.userProgress != null) _buildProgressSection(provider),
+              if (provider.userProgress != null)
+                _buildProgressSection(provider),
 
               const SizedBox(height: 24),
 
               // Story Chapter Section
-              if (provider.currentChapter != null) _buildChapterSection(provider),
+              if (provider.currentChapter != null)
+                _buildChapterSection(provider),
 
               const SizedBox(height: 24),
 
               // AI Character Section
-              if (provider.currentCharacter != null) _buildCharacterSection(provider),
+              if (provider.currentCharacter != null)
+                _buildCharacterSection(provider),
 
               const SizedBox(height: 24),
 
@@ -389,9 +399,15 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildProgressItem('Chapters', '${statistics['totalChapters'] ?? 0}'),
+              _buildProgressItem(
+                'Chapters',
+                '${statistics['totalChapters'] ?? 0}',
+              ),
               _buildProgressItem('Words', '${statistics['totalWords'] ?? 0}'),
-              _buildProgressItem('Accuracy', '${statistics['averageAccuracy'] ?? 0}%'),
+              _buildProgressItem(
+                'Accuracy',
+                '${statistics['averageAccuracy'] ?? 0}%',
+              ),
             ],
           ),
           if (achievements.isNotEmpty) ...[
@@ -407,23 +423,25 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             Wrap(
               spacing: 8,
               children: achievements
-                  .map((achievement) => Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                  .map(
+                    (achievement) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        achievement,
+                        style: AppTheme.caption.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          achievement,
-                          style: AppTheme.caption.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ))
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ],
@@ -482,9 +500,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           const SizedBox(height: 8),
           Text(
             chapter.description,
-            style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 16),
           Text(
@@ -506,27 +522,29 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           Wrap(
             spacing: 8,
             children: chapter.targetWords
-                .map((word) => Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
+                .map(
+                  (word) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryCoral.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AppTheme.primaryCoral,
+                        width: 1,
                       ),
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryCoral.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: AppTheme.primaryCoral,
-                          width: 1,
-                        ),
+                    ),
+                    child: Text(
+                      word,
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.primaryCoral,
+                        fontWeight: FontWeight.w600,
                       ),
-                      child: Text(
-                        word,
-                        style: AppTheme.bodyMedium.copyWith(
-                          color: AppTheme.primaryCoral,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ))
+                    ),
+                  ),
+                )
                 .toList(),
           ),
           const SizedBox(height: 20),
@@ -538,13 +556,18 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             ),
           ),
           const SizedBox(height: 12),
-          ...chapter.choices.map((choice) => _buildChoiceButton(choice, provider)),
+          ...chapter.choices.map(
+            (choice) => _buildChoiceButton(choice, provider),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildChoiceButton(StoryChoice choice, StoryAdventureProvider provider) {
+  Widget _buildChoiceButton(
+    StoryChoice choice,
+    StoryAdventureProvider provider,
+  ) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 8),
@@ -553,10 +576,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primaryTeal.withValues(alpha: 0.1),
           foregroundColor: AppTheme.primaryTeal,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -564,9 +584,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
         ),
         child: Text(
           choice.text,
-          style: AppTheme.bodyMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
       ),
@@ -604,9 +622,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           const SizedBox(height: 8),
           Text(
             character.description,
-            style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
           ),
           if (lastResponse != null) ...[
             const SizedBox(height: 16),
@@ -615,10 +631,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
               decoration: BoxDecoration(
                 color: AppTheme.primaryCoral.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppTheme.primaryCoral,
-                  width: 1,
-                ),
+                border: Border.all(color: AppTheme.primaryCoral, width: 1),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -657,7 +670,8 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           child: TextField(
             controller: textController,
             decoration: InputDecoration(
-              hintText: 'Type a message to ${provider.currentCharacter?.name ?? 'your friend'}...',
+              hintText:
+                  'Type a message to ${provider.currentCharacter?.name ?? 'your friend'}...',
               hintStyle: AppTheme.bodyMedium.copyWith(
                 color: AppTheme.textTertiary,
               ),
@@ -670,9 +684,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
                 borderSide: BorderSide(color: AppTheme.primaryTeal, width: 2),
               ),
             ),
-            style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.textPrimary,
-            ),
+            style: AppTheme.bodyMedium.copyWith(color: AppTheme.textPrimary),
           ),
         ),
         const SizedBox(width: 12),
@@ -724,9 +736,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           const SizedBox(height: 8),
           Text(
             'Practice saying these words: ${targetWords.join(', ')}',
-            style: AppTheme.bodyMedium.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
@@ -742,10 +752,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryCoral,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -904,7 +911,9 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
           onTap: onTap,
           child: Container(
             padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding, vertical: 12),
+              horizontal: horizontalPadding,
+              vertical: 12,
+            ),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
@@ -951,9 +960,7 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
         ),
         content: Text(
           'Are you sure you want to reset your story progress? This will start the story from the beginning.',
-          style: AppTheme.bodyMedium.copyWith(
-            color: AppTheme.textSecondary,
-          ),
+          style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
         ),
         actions: [
           TextButton(
@@ -995,6 +1002,14 @@ class _StoryAdventurePageState extends State<StoryAdventurePage>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _navigateToPreferences(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => UserPreferencesPage(userId: widget.userId),
       ),
     );
   }

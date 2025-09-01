@@ -30,7 +30,8 @@ class StoryChapter {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       content: data['content'] ?? '',
-      choices: (data['choices'] as List<dynamic>?)
+      choices:
+          (data['choices'] as List<dynamic>?)
               ?.map((choice) => StoryChoice.fromMap(choice))
               .toList() ??
           [],
@@ -236,4 +237,14 @@ class AIResponse {
     required this.suggestedResponses,
     required this.context,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'characterId': characterId,
+      'message': message,
+      'emotion': emotion,
+      'suggestedResponses': suggestedResponses,
+      'context': context,
+    };
+  }
 }

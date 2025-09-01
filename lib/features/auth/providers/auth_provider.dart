@@ -7,7 +7,6 @@ import '../../../core/logging/app_logger.dart';
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
-  final bool _isAuthenticated = false;
   User? _user;
 
   bool get isLoading => _isLoading;

@@ -1,4 +1,4 @@
-package com.example.my_template
+package com.vibrantmoose.speakbuddy
 
 import io.flutter.embedding.android.FlutterActivity
 

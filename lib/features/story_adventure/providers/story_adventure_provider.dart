@@ -4,7 +4,7 @@ import '../services/story_adventure_service.dart';
 import '../../../core/logging/app_logger.dart';
 
 class StoryAdventureProvider extends ChangeNotifier {
-  final StoryAdventureService _service = StoryAdventureService();
+  StoryAdventureService? _service;
 
   // State variables
   StoryChapter? _currentChapter;
@@ -24,11 +24,20 @@ class StoryAdventureProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
+  // Get the service instance (lazy initialization)
+  StoryAdventureService get _getService {
+    _service ??= StoryAdventureService();
+    return _service!;
+  }
+
   // Initialize the provider
   Future<void> initialize() async {
     try {
-      await _service.initialize();
+      print('🔧 StoryAdventureProvider: Initializing...');
+      await _getService.initialize();
+      print('🔧 StoryAdventureProvider: Initialized successfully');
     } catch (e) {
+      print('❌ StoryAdventureProvider: Error initializing: $e');
       AppLogger.error('Error initializing Story Adventure Provider: $e');
       _errorMessage = 'Failed to initialize story adventure';
       notifyListeners();
@@ -42,16 +51,23 @@ class StoryAdventureProvider extends ChangeNotifier {
       _errorMessage = '';
 
       // Get user progress
-      _userProgress = await _service.getUserProgress(userId, storyId);
+      _userProgress = await _getService.getUserProgress(userId, storyId);
 
       // Get the first chapter
-      _currentChapter = await _service.getStoryChapter('chapter_1');
+      _currentChapter = await _getService.getStoryChapter(
+        'chapter_1',
+        userId: userId,
+        storyId: storyId,
+      );
       if (_currentChapter == null) {
         throw Exception('Could not load story chapter');
       }
 
       // Get the AI character for this chapter
-      _currentCharacter = await _service.getAICharacter(_currentChapter!.characterId);
+      _currentCharacter = await _getService.getAICharacter(
+        _currentChapter!.characterId,
+        userId: userId,
+      );
       if (_currentCharacter == null) {
         throw Exception('Could not load AI character');
       }
@@ -74,26 +90,30 @@ class StoryAdventureProvider extends ChangeNotifier {
       if (_userProgress != null) {
         final updatedProgress = _userProgress!.copyWith(
           currentChapterId: choice.nextChapterId,
-          choices: {
-            ..._userProgress!.choices,
-            _currentChapter!.id: choice.id,
-          },
+          choices: {..._userProgress!.choices, _currentChapter!.id: choice.id},
           lastPlayed: DateTime.now(),
         );
 
         _userProgress = updatedProgress;
-        await _service.updateUserProgress(updatedProgress);
+        await _getService.updateUserProgress(updatedProgress);
       }
 
       // Load the next chapter
-      _currentChapter = await _service.getStoryChapter(choice.nextChapterId);
+      _currentChapter = await _getService.getStoryChapter(
+        choice.nextChapterId,
+        userId: _userProgress?.userId,
+        storyId: _userProgress?.storyId,
+      );
       if (_currentChapter == null) {
         throw Exception('Could not load next chapter');
       }
 
       // Update AI character if needed
       if (_currentChapter!.characterId != _currentCharacter?.id) {
-        _currentCharacter = await _service.getAICharacter(_currentChapter!.characterId);
+        _currentCharacter = await _getService.getAICharacter(
+          _currentChapter!.characterId,
+          userId: _userProgress?.userId,
+        );
       }
 
       notifyListeners();
@@ -115,7 +135,7 @@ class StoryAdventureProvider extends ChangeNotifier {
         throw Exception('No active story or character');
       }
 
-      _lastAIResponse = await _service.getAICharacterResponse(
+      _lastAIResponse = await _getService.getAICharacterResponse(
         characterId: _currentCharacter!.id,
         userMessage: message,
         context: 'story_interaction',
@@ -125,6 +145,7 @@ class StoryAdventureProvider extends ChangeNotifier {
           'chapterTitle': _currentChapter!.title,
           'targetWords': _currentChapter!.targetWords,
         },
+        userId: _userProgress?.userId,
       );
 
       notifyListeners();
@@ -146,7 +167,7 @@ class StoryAdventureProvider extends ChangeNotifier {
         throw Exception('No active story');
       }
 
-      _lastVoiceResult = await _service.processVoiceInput(
+      _lastVoiceResult = await _getService.processVoiceInput(
         audioFile,
         _currentChapter!.targetWords,
       );
@@ -161,7 +182,7 @@ class StoryAdventureProvider extends ChangeNotifier {
         );
 
         _userProgress = updatedProgress;
-        await _service.updateUserProgress(updatedProgress);
+        await _getService.updateUserProgress(updatedProgress);
       }
 
       notifyListeners();
@@ -191,13 +212,20 @@ class StoryAdventureProvider extends ChangeNotifier {
         );
 
         _userProgress = resetProgress;
-        await _service.updateUserProgress(resetProgress);
+        await _getService.updateUserProgress(resetProgress);
       }
 
       // Reload first chapter
-      _currentChapter = await _service.getStoryChapter('chapter_1');
+      _currentChapter = await _getService.getStoryChapter(
+        'chapter_1',
+        userId: _userProgress?.userId,
+        storyId: _userProgress?.storyId,
+      );
       if (_currentChapter != null) {
-        _currentCharacter = await _service.getAICharacter(_currentChapter!.characterId);
+        _currentCharacter = await _getService.getAICharacter(
+          _currentChapter!.characterId,
+          userId: _userProgress?.userId,
+        );
       }
 
       _lastAIResponse = null;
@@ -221,7 +249,10 @@ class StoryAdventureProvider extends ChangeNotifier {
     final totalChapters = _userProgress!.completedChapters.length;
     final totalWords = _userProgress!.wordAccuracy.length;
     final averageAccuracy = totalWords > 0
-        ? (_userProgress!.wordAccuracy.values.reduce((a, b) => a + b) / totalWords * 100).round()
+        ? (_userProgress!.wordAccuracy.values.reduce((a, b) => a + b) /
+                  totalWords *
+                  100)
+              .round()
         : 0;
 
     return {

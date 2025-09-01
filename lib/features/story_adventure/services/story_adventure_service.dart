@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/story_models.dart';
 import '../data/demo_story_data.dart';
 import '../../../core/logging/app_logger.dart';
+import 'ai_content_generator.dart';
 
 class StoryAdventureService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AIContentGenerator _aiGenerator = AIContentGenerator();
 
   // Initialize the service
   Future<void> initialize() async {
@@ -13,27 +15,122 @@ class StoryAdventureService {
     AppLogger.info('Story Adventure Service initialized with demo data');
   }
 
-  // Get story chapter from Firestore or fallback to demo data
-  Future<StoryChapter?> getStoryChapter(String chapterId) async {
+  // Get story chapter from Firestore or generate new content using AI
+  Future<StoryChapter?> getStoryChapter(
+    String chapterId, {
+    String? userId,
+    String? storyId,
+  }) async {
     try {
+      print(
+        '🔍 DEBUG: getStoryChapter called with chapterId: $chapterId, userId: $userId, storyId: $storyId',
+      );
+
       // Check if Firestore is available
       if (!_isFirestoreAvailable()) {
+        print('⚠️ DEBUG: Firestore not available, using demo story data');
         AppLogger.warning('Firestore not available, using demo story data');
         return _getDemoStoryChapter(chapterId);
       }
 
+      print(
+        '🔍 DEBUG: Firestore is available, checking for existing chapter...',
+      );
+
+      // First try to get existing chapter
       final doc = await _firestore
           .collection('story_chapters')
           .doc(chapterId)
           .get();
       if (doc.exists) {
-        return StoryChapter.fromFirestore(doc);
+        print('🔍 DEBUG: Found existing chapter in Firestore');
+        final existingChapter = StoryChapter.fromFirestore(doc);
+
+        // Check if this is a fallback chapter that should be regenerated
+        final isFallback = existingChapter.metadata['fallback'] == true;
+        final hasFallbackContent = existingChapter.content.contains(
+          'This is a fallback chapter',
+        );
+
+        if ((isFallback || hasFallbackContent) &&
+            userId != null &&
+            storyId != null) {
+          print('🔍 DEBUG: Found fallback chapter, regenerating with AI...');
+          // Delete the fallback chapter and regenerate
+          try {
+            await _firestore
+                .collection('story_chapters')
+                .doc(chapterId)
+                .delete();
+            print(
+              '🔍 DEBUG: Deleted fallback chapter, proceeding to AI generation',
+            );
+          } catch (e) {
+            print('⚠️ DEBUG: Could not delete fallback chapter: $e');
+          }
+          // Continue to AI generation below
+        } else if (!isFallback && !hasFallbackContent) {
+          print('🔍 DEBUG: Found valid existing chapter, using it');
+          return existingChapter;
+        }
       }
-      
-      // If no document found in Firestore, fall back to demo data
-      AppLogger.warning('Story chapter not found in Firestore, using demo data: $chapterId');
+
+      print('🔍 DEBUG: No existing chapter found, checking user context...');
+
+      // If no existing chapter and we have user context, generate new content
+      if (userId != null && storyId != null) {
+        print(
+          '🔍 DEBUG: User context available, generating new chapter with AI',
+        );
+        AppLogger.info('Generating new story chapter using AI: $chapterId');
+        try {
+          // Extract chapter number from chapterId (e.g., "chapter_1" -> 1)
+          final chapterNumber =
+              int.tryParse(chapterId.replaceAll('chapter_', '')) ?? 1;
+
+          print('🔍 DEBUG: Chapter number: $chapterNumber');
+
+          // Get user progress to understand context
+          final userProgress = await getUserProgress(userId, storyId);
+          final previousChapters = userProgress.completedChapters;
+
+          print(
+            '🔍 DEBUG: User progress retrieved, previous chapters: ${previousChapters.length}',
+          );
+
+          // Generate new chapter using AI
+          print('🔍 DEBUG: Calling _aiGenerator.generateStoryChapter...');
+          final generatedChapter = await _aiGenerator.generateStoryChapter(
+            userId: userId,
+            storyId: storyId,
+            chapterNumber: chapterNumber,
+            previousChapters: previousChapters,
+            userWordAccuracy: userProgress.wordAccuracy,
+            characterId: 'wizard', // Default character, can be made dynamic
+          );
+
+          print('🔍 DEBUG: AI generation completed successfully');
+          AppLogger.info(
+            'Successfully generated new chapter: ${generatedChapter.id}',
+          );
+          return generatedChapter;
+        } catch (aiError) {
+          print('❌ DEBUG: AI generation failed: $aiError');
+          AppLogger.warning(
+            'AI generation failed, falling back to demo data: $aiError',
+          );
+          return _getDemoStoryChapter(chapterId);
+        }
+      }
+
+      print('⚠️ DEBUG: No user context for AI generation, using demo data');
+      // Fall back to demo data if no user context or AI generation fails
+      AppLogger.warning(
+        'No user context for AI generation, using demo data: $chapterId',
+      );
       return _getDemoStoryChapter(chapterId);
     } catch (e) {
+      print('❌ DEBUG: Error in getStoryChapter: $e');
       AppLogger.warning(
         'Error getting story chapter from Firestore, using demo data: $e',
       );
@@ -41,8 +138,11 @@ class StoryAdventureService {
     }
   }
 
-  // Get AI character from Firestore or fallback to demo data
-  Future<AICharacter?> getAICharacter(String characterId) async {
+  // Get AI character from Firestore or generate new one using AI
+  Future<AICharacter?> getAICharacter(
+    String characterId, {
+    String? userId,
+  }) async {
     try {
       // Check if Firestore is available
       if (!_isFirestoreAvailable()) {
@@ -59,9 +159,39 @@ class StoryAdventureService {
       if (doc.exists) {
         return AICharacter.fromFirestore(doc);
       }
-      
-      // If no document found in Firestore, fall back to demo data
-      AppLogger.warning('AI character not found in Firestore, using demo data: $characterId');
+
+      // If no existing character and we have user context, generate new one
+      if (userId != null) {
+        AppLogger.info('Generating new AI character using AI: $characterId');
+        try {
+          // Generate new character using AI (with default preferences)
+          final generatedCharacter = await _aiGenerator.generateAICharacter(
+            userId: userId,
+            characterId: characterId,
+            userInterests: [
+              'speech',
+              'learning',
+              'adventure',
+            ], // Default interests
+            userAge: 8, // Default age, can be made dynamic
+          );
+
+          AppLogger.info(
+            'Successfully generated new character: ${generatedCharacter.id}',
+          );
+          return generatedCharacter;
+        } catch (aiError) {
+          AppLogger.warning(
+            'AI generation failed, falling back to demo data: $aiError',
+          );
+          return _getDemoAICharacter(characterId);
+        }
+      }
+
+      // Fall back to demo data if no user context or AI generation fails
+      AppLogger.warning(
+        'No user context for AI generation, using demo data: $characterId',
+      );
       return _getDemoAICharacter(characterId);
     } catch (e) {
       AppLogger.warning(
@@ -74,43 +204,63 @@ class StoryAdventureService {
   // Get or create user progress
   Future<StoryProgress> getUserProgress(String userId, String storyId) async {
     try {
+      print(
+        '🔍 DEBUG: getUserProgress called with userId: $userId, storyId: $storyId',
+      );
+
       // Check if Firestore is available
       if (!_isFirestoreAvailable()) {
+        print('⚠️ DEBUG: Firestore not available, using fallback progress');
         AppLogger.warning('Firestore not available, using fallback progress');
         return _createFallbackProgress(userId, storyId);
       }
 
+      print('🔍 DEBUG: Firestore is available, checking authentication...');
+
       // Check if user is authenticated
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
+        print('⚠️ DEBUG: User not authenticated, using fallback progress');
         AppLogger.warning('User not authenticated, using fallback progress');
         return _createFallbackProgress(userId, storyId);
       }
 
+      print(
+        '🔍 DEBUG: User is authenticated, currentUser.uid: ${currentUser.uid}',
+      );
+
       // Verify the user ID matches the authenticated user
       if (currentUser.uid != userId) {
+        print(
+          '⚠️ DEBUG: User ID mismatch, currentUser.uid: ${currentUser.uid}, provided userId: $userId',
+        );
         AppLogger.warning('User ID mismatch, using fallback progress');
         return _createFallbackProgress(userId, storyId);
       }
 
+      print('🔍 DEBUG: User ID matches, checking Firestore for progress...');
+
       final doc = await _firestore
           .collection('story_progress')
-          .where('userId', isEqualTo: userId)
-          .where('storyId', isEqualTo: storyId)
-          .limit(1)
+          .doc(userId)
           .get();
 
-      if (doc.docs.isNotEmpty) {
-        return StoryProgress.fromFirestore(doc.docs.first);
+      if (doc.exists) {
+        print('🔍 DEBUG: Found existing progress in Firestore');
+        return StoryProgress.fromFirestore(doc);
       } else {
+        print('🔍 DEBUG: No existing progress found, creating new progress...');
         // Create new progress
         final newProgress = _createFallbackProgress(userId, storyId);
 
         try {
           await _firestore
               .collection('story_progress')
-              .add(newProgress.toMap());
+              .doc(userId)
+              .set(newProgress.toMap());
+          print('🔍 DEBUG: New progress saved to Firestore');
         } catch (e) {
+          print('⚠️ DEBUG: Could not save to Firestore: $e');
           AppLogger.warning(
             'Could not save to Firestore, using local progress: $e',
           );
@@ -119,6 +269,7 @@ class StoryAdventureService {
         return newProgress;
       }
     } catch (e) {
+      print('❌ DEBUG: Error in getUserProgress: $e');
       AppLogger.warning('Error getting user progress, using fallback: $e');
       return _createFallbackProgress(userId, storyId);
     }
@@ -182,16 +333,10 @@ class StoryAdventureService {
         return;
       }
 
-      final docRef = await _firestore
+      await _firestore
           .collection('story_progress')
-          .where('userId', isEqualTo: progress.userId)
-          .where('storyId', isEqualTo: progress.storyId)
-          .limit(1)
-          .get();
-
-      if (docRef.docs.isNotEmpty) {
-        await docRef.docs.first.reference.update(progress.toMap());
-      }
+          .doc(progress.userId)
+          .set(progress.toMap(), SetOptions(merge: true));
     } catch (e) {
       AppLogger.error('Error updating user progress: $e');
       // Don't throw - just log the error to prevent app crashes
@@ -342,39 +487,74 @@ class StoryAdventureService {
     }
   }
 
-  // Get AI character response (simplified for demo)
+  // Get AI character response using AI generation
   Future<AIResponse> getAICharacterResponse({
     required String characterId,
     required String userMessage,
     required String context,
     required List<String> targetWords,
     required Map<String, dynamic> storyContext,
+    String? userId,
   }) async {
-    // For demo purposes, return a predefined response
-    // In production, this would integrate with OpenAI or similar service
-    final responses = {
-      'wizard':
-          'Great job speaking! Let\'s continue our magical adventure together. What would you like to do next?',
-      'robot':
-          'Excellent communication! Your words are getting clearer. Shall we explore more of our robot world?',
-      'fairy':
-          'Wonderful speaking! Your voice is like music. Where shall we fly to next in our fairy tale?',
-    };
+    try {
+      // If we have user context, generate personalized AI response
+      if (userId != null) {
+        AppLogger.info('Generating personalized AI response for user: $userId');
+        try {
+          final generatedResponse = await _aiGenerator
+              .generateCharacterResponse(
+                characterId: characterId,
+                userMessage: userMessage,
+                context: context,
+                targetWords: targetWords,
+                storyContext: storyContext,
+                userId: userId,
+              );
 
-    final characterResponses = {
-      'wizard': ['Cast a spell', 'Read a book', 'Make potions'],
-      'robot': ['Fix machines', 'Learn codes', 'Build things'],
-      'fairy': ['Fly to flowers', 'Help animals', 'Make wishes'],
-    };
+          AppLogger.info('Successfully generated AI response');
+          return generatedResponse;
+        } catch (aiError) {
+          AppLogger.warning(
+            'AI generation failed, falling back to demo response: $aiError',
+          );
+        }
+      }
 
-    return AIResponse(
-      characterId: characterId,
-      message:
-          responses[characterId] ?? 'Great job! Let\'s continue our adventure!',
-      emotion: 'happy',
-      suggestedResponses:
-          characterResponses[characterId] ?? ['Continue', 'Explore', 'Learn'],
-      context: {'targetWords': targetWords},
-    );
+      // Fall back to predefined responses if AI generation fails or no user context
+      final responses = {
+        'wizard':
+            'Great job speaking! Let\'s continue our magical adventure together. What would you like to do next?',
+        'robot':
+            'Excellent communication! Your words are getting clearer. Shall we explore more of our robot world?',
+        'fairy':
+            'Wonderful speaking! Your voice is like music. Where shall we fly to next in our fairy tale?',
+      };
+
+      final characterResponses = {
+        'wizard': ['Cast a spell', 'Read a book', 'Make potions'],
+        'robot': ['Fix machines', 'Learn codes', 'Build things'],
+        'fairy': ['Fly to flowers', 'Help animals', 'Make wishes'],
+      };
+
+      return AIResponse(
+        characterId: characterId,
+        message:
+            responses[characterId] ??
+            'Great job! Let\'s continue our adventure!',
+        emotion: 'happy',
+        suggestedResponses:
+            characterResponses[characterId] ?? ['Continue', 'Explore', 'Learn'],
+        context: {'targetWords': targetWords, 'fallback': true},
+      );
+    } catch (e) {
+      AppLogger.error('Error getting AI character response: $e');
+      return AIResponse(
+        characterId: characterId,
+        message: 'Great job! Let\'s continue our adventure!',
+        emotion: 'happy',
+        suggestedResponses: ['Continue', 'Explore', 'Learn'],
+        context: {'targetWords': targetWords, 'error': true},
+      );
+    }
   }
 }

@@ -460,8 +460,6 @@ class DashboardPage extends StatelessWidget {
                   // Speech Activities section
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final isSmallScreen = constraints.maxWidth < 400;
-
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -832,7 +830,7 @@ class DashboardPage extends StatelessWidget {
                 context.read<AuthProvider>().signOut();
               },
               style: AppTheme.primaryButton.copyWith(
-                backgroundColor: MaterialStateProperty.all(AppTheme.error),
+                backgroundColor: WidgetStateProperty.all(AppTheme.error),
               ),
               child: Text(
                 'Sign Out',

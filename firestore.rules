@@ -8,44 +8,59 @@ service cloud.firestore {
     
     // Story progress - users can read/write their own progress
     match /story_progress/{progressId} {
-      allow read: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null && 
-        request.auth.uid == request.resource.data.userId;
-      allow update, delete: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+      allow read, write: if request.auth != null && 
+        (progressId == request.auth.uid || 
+         (resource != null && resource.data.userId == request.auth.uid));
     }
     
     // Voice practice sessions - users can read/write their own sessions
     match /voice_sessions/{sessionId} {
       allow read: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+        resource.data.userId == request.auth.uid;
       allow create: if request.auth != null && 
-        request.auth.uid == request.resource.data.userId;
+        request.resource.data.userId == request.auth.uid;
       allow update, delete: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+        resource.data.userId == request.auth.uid;
     }
     
-    // Story content - public read access for authenticated users
+    // Story content - public read access for authenticated users, AI can generate content
     match /story_chapters/{chapterId} {
       allow read: if request.auth != null;
-      allow write: if false; // Only admins can modify stories
+      allow create, update: if request.auth != null &&
+        (request.resource.data.metadata.generatedBy == 'AI' || 
+         request.resource.data.metadata.fallback == true);
+      allow delete: if request.auth != null &&
+        (resource.data.metadata.fallback == true || 
+         resource.data.metadata.generatedBy == 'AI');
     }
     
-    // AI characters - public read access for authenticated users
+    // AI characters - public read access for authenticated users, AI can generate content
     match /ai_characters/{characterId} {
       allow read: if request.auth != null;
-      allow write: if false; // Only admins can modify characters
+      allow write: if request.auth != null &&
+        (request.resource.data.metadata.generatedBy == 'AI' || 
+         request.resource.data.metadata.fallback == true);
+    }
+
+    // User preferences - users can read/write their own preferences
+    match /user_preferences/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User interactions with AI - users can read/write their own interactions
+    match /user_interactions/{interactionId} {
+      allow read, write: if request.auth != null &&
+        request.auth.uid == resource.data.userId;
     }
     
     // User achievements - users can read their own achievements
     match /achievements/{achievementId} {
       allow read: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+        resource.data.userId == request.auth.uid;
       allow create: if request.auth != null && 
-        request.auth.uid == request.resource.data.userId;
+        request.resource.data.userId == request.auth.uid;
       allow update, delete: if request.auth != null && 
-        request.auth.uid == resource.data.userId;
+        resource.data.userId == request.auth.uid;
     }
     
     // Default deny all
