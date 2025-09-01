@@ -44,10 +44,10 @@ app.*.map.json
 /android/app/release
 
 # Environment configuration files
-#.env
-#.env.local
-#.env.production
-#.env.staging
+.env
+.env.local
+.env.production
+.env.staging
 
 # Firebase configuration files -- commented for this repo
 #google-services.json
